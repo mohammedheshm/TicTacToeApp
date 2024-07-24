@@ -18,8 +18,7 @@
         </columns>
     </TableView>
     
-    
-    
+
     
     <Button layoutX="17.0" layoutY="383.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="44.0" scaleShape="false" styleClass="round-button">
         <graphic>
