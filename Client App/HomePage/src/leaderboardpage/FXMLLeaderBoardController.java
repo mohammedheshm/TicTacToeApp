@@ -1,4 +1,3 @@
-
 package leaderboardpage;
 
 import java.net.URL;
@@ -23,20 +22,16 @@ public class FXMLLeaderBoardController implements Initializable {
 
     @FXML
     private TableColumn<?, ?> statusColumn;
-
  
-        
-       @FXML
+    @FXML
     private void handleBackHButton(ActionEvent event) {
-              
-        Navigation.nextPage(event, "/homepage/FXMLHome.fxml");
 
-    }
-    
+        Navigation.nextPage(event, "/homepage/FXMLHome.fxml");
+       }
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-     // Customize column header
+     
         playerColumn.setText("Player");
         playerColumn.setStyle("-fx-background-color: #D0B8A8; -fx-text-fill: #8D493A; -fx-font-weight: bold;");
 
@@ -46,6 +41,9 @@ public class FXMLLeaderBoardController implements Initializable {
         statusColumn.setText("Status");
         statusColumn.setStyle("-fx-background-color: #D0B8A8; -fx-text-fill: #8D493A; -fx-font-weight: bold;");
 
-    }        }    
+   }          
+       
+   
+}    
     
 
