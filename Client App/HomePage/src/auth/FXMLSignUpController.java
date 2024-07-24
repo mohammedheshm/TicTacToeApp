@@ -8,9 +8,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import pagemanager.Navigation;
 
+
 public class FXMLSignUpController implements Initializable {
 
-   //#handleBackLoginButton
     
     
          @FXML
@@ -21,7 +21,7 @@ public class FXMLSignUpController implements Initializable {
     }
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        
     }    
     
 }
