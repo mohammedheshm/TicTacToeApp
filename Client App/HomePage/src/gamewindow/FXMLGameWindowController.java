@@ -1,3 +1,4 @@
+
 package gamewindow;
 
 import java.net.URL;
@@ -27,7 +28,6 @@ public class FXMLGameWindowController implements Initializable {
     public void handleScreenShootButton(ActionEvent  event) {
             
         
-      //Logic..............
        
        
     }
@@ -35,7 +35,7 @@ public class FXMLGameWindowController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+     
     }    
     
 }
