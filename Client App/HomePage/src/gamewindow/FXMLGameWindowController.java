@@ -435,12 +435,12 @@ public class FXMLGameWindowController implements Initializable {
                     if (result.equals("win")) {
                         FXMLWinnerController controller = loader.getController();
                         mediaView = controller.getMediaView();
-                        Media winMedia = new Media(new File("D:\\3uToolsV3\\Top.Gun.Maverick.2022.720p.WEB-DL.AKWAM.mp4").toURI().toString());
+                        Media winMedia = new Media(getClass().getResource("/resources/winner.mp4").toExternalForm());
                         mediaPlayer = new MediaPlayer(winMedia);
                     } else {
                         FXMLLoserController controller = loader.getController();
                         mediaView = controller.getMediaView();
-                        Media loseMedia = new Media(new File("C:\\Users\\Muhamed Sultan\\Desktop\\Loser video.mp4").toURI().toString());
+                        Media loseMedia = new Media(getClass().getResource("/resources/loser.mp4").toExternalForm());
                         mediaPlayer = new MediaPlayer(loseMedia);
                     }
 
