@@ -2,6 +2,7 @@ package gamewindow;
 
 import alert.FXMLLoserController;
 import alert.FXMLWinnerController;
+import alert.PlayerNameDialogController;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -22,6 +23,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -34,7 +36,6 @@ import pagemanager.Navigation;
 
 public class FXMLGameWindowController implements Initializable {
 
-
     private String[][] board = new String[3][3];
     private boolean isUserTurn = true;
     private int userScore = 0;
@@ -42,9 +43,7 @@ public class FXMLGameWindowController implements Initializable {
     private boolean gameWon = false;
     private Random random = new Random();
     private String difficulty;
- private MediaPlayer winMediaPlayer;
-    private MediaPlayer loseMediaPlayer;
-    
+    private PlayerNameDialogController controller;
 
     @FXML
     private Text userScoreText;
@@ -52,6 +51,9 @@ public class FXMLGameWindowController implements Initializable {
     private Text computerNameText;
     @FXML
     private Text computerScoreText;
+
+    @FXML
+    private Text userNameText;
 
     @FXML
     private Button button00;
@@ -78,6 +80,7 @@ public class FXMLGameWindowController implements Initializable {
 
     private final Image xImage = new Image(getClass().getResourceAsStream("/resources/x.png"));
     private final Image oImage = new Image(getClass().getResourceAsStream("/resources/o.png"));
+    private final Image player2Image = new Image(getClass().getResourceAsStream("/resources/humanavatar1.png"));
 
     @FXML
     public void handleBackHButton(ActionEvent event) {
@@ -145,7 +148,6 @@ public class FXMLGameWindowController implements Initializable {
         }
     }
 
-
     private void computerMove() {
         switch (difficulty) {
             case "easy":
@@ -159,12 +161,10 @@ public class FXMLGameWindowController implements Initializable {
                 break;
         }
 
-
         if (checkWin()) {
             highlightWinningButtons();
             gameWon = true;
             computerScore++;
-            computerScoreText.setText(String.valueOf(computerScore));
             Platform.runLater(() -> {
                 Alert alert = new Alert(AlertType.INFORMATION);
                 alert.setTitle("Game Over");
@@ -179,7 +179,6 @@ public class FXMLGameWindowController implements Initializable {
         } else {
             isUserTurn = true;
         }
-
 
     }
 
@@ -203,9 +202,9 @@ public class FXMLGameWindowController implements Initializable {
             easyMove();
         }
     }
-	
-	// Block User
-	private boolean blockUserWin() {
+
+    // Block User
+    private boolean blockUserWin() {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 if (board[i][j] == null) {
@@ -224,8 +223,8 @@ public class FXMLGameWindowController implements Initializable {
         }
         return false;
     }
-    
-	// Handel Hard Mode With Computer
+
+    // Handel Hard Mode With Computer
     private void hardMove() {
         int[] bestMove = minimax(board, true);
         int row = bestMove[0];
@@ -236,7 +235,7 @@ public class FXMLGameWindowController implements Initializable {
         }
     }
 
-	// MinMax Algorithm
+    // MinMax Algorithm
     private int[] minimax(String[][] board, boolean isMaximizing) {
         int bestScore = isMaximizing ? Integer.MIN_VALUE : Integer.MAX_VALUE;
         int[] bestMove = {-1, -1, isMaximizing ? Integer.MIN_VALUE : Integer.MAX_VALUE};
@@ -270,7 +269,7 @@ public class FXMLGameWindowController implements Initializable {
         return bestMove;
     }
 
-	// Check Win 
+    // Check Win 
     private boolean checkWin() {
         for (int i = 0; i < 3; i++) {
             if (board[i][0] != null && board[i][0].equals(board[i][1]) && board[i][1].equals(board[i][2])) {
@@ -289,7 +288,7 @@ public class FXMLGameWindowController implements Initializable {
         return false;
     }
 
-	// Highlight Winer Buttons
+    // Highlight Winer Buttons
     private void highlightWinningButtons() {
         for (int i = 0; i < 3; i++) {
             if (board[i][0] != null && board[i][0].equals(board[i][1]) && board[i][1].equals(board[i][2])) {
@@ -314,7 +313,7 @@ public class FXMLGameWindowController implements Initializable {
             highlightButton(2, 0);
         }
     }
-    
+
     private void highlightButton(int row, int col) {
         Button button = getButtonByRowCol(row, col);
         if (button != null) {
@@ -383,101 +382,133 @@ public class FXMLGameWindowController implements Initializable {
         isUserTurn = true;
         gameWon = false;
     }
-    
-    
+
     private void resetButtonStyle(Button button) {
         button.setGraphic(null);
         button.setStyle("-fx-background-color: #DFD3C3; -fx-background-radius: 15;");
     }
 
-private void showGameResult(String result) {
-    Platform.runLater(() -> {
-        try {
-            if (FXMLLocalController.isTwoPlayers) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Game Over");
-                alert.setHeaderText(null);
-                switch (result) {
-                    case "win":
-                        alert.setContentText("Congratulations! Player1 wins.");
-                        break;
-                    case "lose":
-                        alert.setContentText("Congratulations! Player2 wins.");
-                        break;
-                    case "tie":
-                        alert.setContentText("It's a tie!");
-                        break;
-                }
-                alert.showAndWait();
-            } else {
-                FXMLLoader loader;
-                switch (result) {
-                    case "win":
-                        loader = new FXMLLoader(getClass().getResource("/alert/FXMLWinner.fxml"));
-                        break;
-                    case "lose":
-                        loader = new FXMLLoader(getClass().getResource("/alert/FXMLLoser.fxml"));
-                        break;
-                    case "tie":
-                        Alert tieAlert = new Alert(Alert.AlertType.INFORMATION);
-                        tieAlert.setTitle("Game Over");
-                        tieAlert.setHeaderText(null);
-                        tieAlert.setContentText("It's a tie!");
-                        tieAlert.showAndWait();
-                        return;
-                    default:
-                        return;
-                }
-
-                Parent root = loader.load();
-                MediaView mediaView;
-                final MediaPlayer mediaPlayer;
-
-                if (result.equals("win")) {
-                    FXMLWinnerController controller = loader.getController();
-                    mediaView = controller.getMediaView();
-                    Media winMedia = new Media(new File("D:\\3uToolsV3\\Top.Gun.Maverick.2022.720p.WEB-DL.AKWAM.mp4").toURI().toString());
-                    mediaPlayer = new MediaPlayer(winMedia);
-                } else {
-                    FXMLLoserController controller = loader.getController();
-                    mediaView = controller.getMediaView();
-Media loseMedia = new Media(new File("C:\\Users\\Muhamed Sultan\\Desktop\\Loser video.mp4").toURI().toString());
-                    mediaPlayer = new MediaPlayer(loseMedia);
-                }
-
-                mediaView.setMediaPlayer(mediaPlayer);
-                mediaView.setFitWidth(820);
-                mediaView.setFitHeight(450);
-                mediaPlayer.play();
-
-                Stage stage = new Stage();
-                stage.setTitle("Game Over");
-                Scene scene = new Scene(root);
-                stage.setScene(scene);
-
-                stage.setOnCloseRequest(event -> {
-                    if (mediaPlayer.getStatus().equals(MediaPlayer.Status.PLAYING)) {
-                        mediaPlayer.stop();
+    private void showGameResult(String result) {
+        Platform.runLater(() -> {
+            try {
+                if (FXMLLocalController.isTwoPlayers) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Game Over");
+                    alert.setHeaderText(null);
+                    switch (result) {
+                        case "win":
+                        alert.setContentText("Congratulations! " + (controller != null ? controller.getPlayer1Name() : "Player 1") + " wins.");
+                            break;
+                        case "lose":
+                        alert.setContentText("Congratulations! " + (controller != null ? controller.getPlayer2Name() : "Player 2") + " wins.");
+                            break;
+                        case "tie":
+                            alert.setContentText("It's a tie!");
+                            break;
                     }
-                });
+                    alert.showAndWait();
+                } else {
+                    FXMLLoader loader;
+                    switch (result) {
+                        case "win":
+                            loader = new FXMLLoader(getClass().getResource("/alert/FXMLWinner.fxml"));
+                            break;
+                        case "lose":
+                            loader = new FXMLLoader(getClass().getResource("/alert/FXMLLoser.fxml"));
+                            break;
+                        case "tie":
+                            Alert tieAlert = new Alert(Alert.AlertType.INFORMATION);
+                            tieAlert.setTitle("Game Over");
+                            tieAlert.setHeaderText(null);
+                            tieAlert.setContentText("It's a tie!");
+                            tieAlert.showAndWait();
+                            return;
+                        default:
+                            return;
+                    }
 
-                stage.showAndWait();
+                    Parent root = loader.load();
+                    MediaView mediaView;
+                    final MediaPlayer mediaPlayer;
+
+                    if (result.equals("win")) {
+                        FXMLWinnerController controller = loader.getController();
+                        mediaView = controller.getMediaView();
+                        Media winMedia = new Media(new File("D:\\3uToolsV3\\Top.Gun.Maverick.2022.720p.WEB-DL.AKWAM.mp4").toURI().toString());
+                        mediaPlayer = new MediaPlayer(winMedia);
+                    } else {
+                        FXMLLoserController controller = loader.getController();
+                        mediaView = controller.getMediaView();
+                        Media loseMedia = new Media(new File("C:\\Users\\Muhamed Sultan\\Desktop\\Loser video.mp4").toURI().toString());
+                        mediaPlayer = new MediaPlayer(loseMedia);
+                    }
+
+                    mediaView.setMediaPlayer(mediaPlayer);
+                    mediaView.setFitWidth(820);
+                    mediaView.setFitHeight(450);
+                    mediaPlayer.play();
+
+                    Stage stage = new Stage();
+                    stage.setTitle("Game Over");
+                    Scene scene = new Scene(root);
+                    stage.setScene(scene);
+
+                    stage.setOnCloseRequest(event -> {
+                        if (mediaPlayer.getStatus().equals(MediaPlayer.Status.PLAYING)) {
+                            mediaPlayer.stop();
+                        }
+                    });
+
+                    stage.showAndWait();
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(FXMLGameWindowController.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } catch (IOException ex) {
-            Logger.getLogger(FXMLGameWindowController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    });
-}
-    
-    
-    
-    
-    
+        });
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        userScoreText.setText(String.valueOf(userScore));
+        computerScoreText.setText(String.valueOf(computerScore));
+        difficulty = FXMLLocalController.getDifficulty();
 
+        if (FXMLLocalController.isTwoPlayers) {
+            showPlayerNameDialog();
+            imageView.setImage(player2Image);
+        } else {
+            computerNameText.setText("Computer");
+        }
     }
 
+    private void showPlayerNameDialog() {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/alert/FXMLPlayerNameDialog.fxml"));
+            AnchorPane page = loader.load();
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Enter Player Names");
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+
+            controller = loader.getController();
+            controller.setDialogStage(dialogStage);
+
+            dialogStage.showAndWait();
+
+            if (controller.isOkClicked()) {
+                String player1Name = controller.getPlayer1Name();
+                String player2Name = controller.getPlayer2Name();
+                userNameText.setText(player1Name);
+                computerNameText.setText(player2Name);
+            } else {
+                userNameText.setText("Player1");
+                computerNameText.setText("Player2");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
