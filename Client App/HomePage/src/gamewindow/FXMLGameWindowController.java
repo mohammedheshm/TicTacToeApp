@@ -189,6 +189,117 @@ public class FXMLGameWindowController implements Initializable {
             easyMove();
         }
     }
+	
+	// Block User
+	private boolean blockUserWin() {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j] == null) {
+                    board[i][j] = "X";
+                    if (checkWin()) {
+                        board[i][j] = "O";
+                        Button button = getButtonByRowCol(i, j);
+                        if (button != null) {
+                            makeMove(button, i, j, "O", oImage);
+                        }
+                        return true;
+                    }
+                    board[i][j] = null;
+                }
+            }
+        }
+        return false;
+    }
+    
+	// Handel Hard Mode With Computer
+    private void hardMove() {
+        int[] bestMove = minimax(board, true);
+        int row = bestMove[0];
+        int col = bestMove[1];
+        Button button = getButtonByRowCol(row, col);
+        if (button != null) {
+            makeMove(button, row, col, "O", oImage);
+        }
+    }
+
+	// MinMax Algorithm
+    private int[] minimax(String[][] board, boolean isMaximizing) {
+        int bestScore = isMaximizing ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+        int[] bestMove = {-1, -1, isMaximizing ? Integer.MIN_VALUE : Integer.MAX_VALUE};
+
+        if (checkWin()) {
+            return new int[]{-1, -1, isMaximizing ? -1 : 1};
+        }
+
+        if (isBoardFull()) {
+            return new int[]{-1, -1, 0};
+        }
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j] == null) {
+                    board[i][j] = isMaximizing ? "O" : "X";
+                    int[] move = minimax(board, !isMaximizing);
+                    board[i][j] = null;
+                    int score = move[2];
+
+                    if (isMaximizing && score > bestScore || !isMaximizing && score < bestScore) {
+                        bestScore = score;
+                        bestMove[0] = i;
+                        bestMove[1] = j;
+                        bestMove[2] = score;
+                    }
+                }
+            }
+        }
+
+        return bestMove;
+    }
+
+	// Check Win 
+    private boolean checkWin() {
+        for (int i = 0; i < 3; i++) {
+            if (board[i][0] != null && board[i][0].equals(board[i][1]) && board[i][1].equals(board[i][2])) {
+                return true;
+            }
+            if (board[0][i] != null && board[0][i].equals(board[1][i]) && board[1][i].equals(board[2][i])) {
+                return true;
+            }
+        }
+        if (board[0][0] != null && board[0][0].equals(board[1][1]) && board[1][1].equals(board[2][2])) {
+            return true;
+        }
+        if (board[0][2] != null && board[0][2].equals(board[1][1]) && board[1][1].equals(board[2][0])) {
+            return true;
+        }
+        return false;
+    }
+
+	// Highlight Winer Buttons
+    private void highlightWinningButtons() {
+        for (int i = 0; i < 3; i++) {
+            if (board[i][0] != null && board[i][0].equals(board[i][1]) && board[i][1].equals(board[i][2])) {
+                highlightButton(i, 0);
+                highlightButton(i, 1);
+                highlightButton(i, 2);
+            }
+            if (board[0][i] != null && board[0][i].equals(board[1][i]) && board[1][i].equals(board[2][i])) {
+                highlightButton(0, i);
+                highlightButton(1, i);
+                highlightButton(2, i);
+            }
+        }
+        if (board[0][0] != null && board[0][0].equals(board[1][1]) && board[1][1].equals(board[2][2])) {
+            highlightButton(0, 0);
+            highlightButton(1, 1);
+            highlightButton(2, 2);
+        }
+        if (board[0][2] != null && board[0][2].equals(board[1][1]) && board[1][1].equals(board[2][0])) {
+            highlightButton(0, 2);
+            highlightButton(1, 1);
+            highlightButton(2, 0);
+        }
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
