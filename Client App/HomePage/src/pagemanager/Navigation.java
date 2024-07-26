@@ -34,16 +34,7 @@ public class Navigation {
     }
     
 public static void showAlert(ActionEvent event, String fxmlPath, String message, String title, Image image) {
-    if (fxmlPath == null || fxmlPath.isEmpty()) {
-        System.err.println("FXML path is null or empty.");
-        return;
-    }
-
-    if (message == null) {
-        System.err.println("Message is null.");
-        return;
-    }
-
+   
     try {
         FXMLLoader loader = new FXMLLoader(Navigation.class.getResource(fxmlPath));
         Parent dialogRoot = loader.load();
@@ -54,8 +45,6 @@ public static void showAlert(ActionEvent event, String fxmlPath, String message,
 
         if (event != null) {
             dialogStage.initOwner(((Node) event.getSource()).getScene().getWindow());
-        } else {
-            System.err.println("Event is null.");
         }
 
         Object controller = loader.getController();
@@ -68,9 +57,7 @@ public static void showAlert(ActionEvent event, String fxmlPath, String message,
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        } else {
-            System.err.println("Controller is null.");
-        }
+        } 
 
         dialogStage.showAndWait();
     } catch (IOException e) {
