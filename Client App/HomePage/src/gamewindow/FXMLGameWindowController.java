@@ -1,21 +1,33 @@
 package gamewindow;
 
+import alert.FXMLLoserController;
+import alert.FXMLWinnerController;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Random;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import localpage.FXMLLocalController;
 import pagemanager.Navigation;
@@ -30,7 +42,9 @@ public class FXMLGameWindowController implements Initializable {
     private boolean gameWon = false;
     private Random random = new Random();
     private String difficulty;
-
+ private MediaPlayer winMediaPlayer;
+    private MediaPlayer loseMediaPlayer;
+    
 
     @FXML
     private Text userScoreText;
@@ -369,6 +383,96 @@ public class FXMLGameWindowController implements Initializable {
         isUserTurn = true;
         gameWon = false;
     }
+    
+    
+    private void resetButtonStyle(Button button) {
+        button.setGraphic(null);
+        button.setStyle("-fx-background-color: #DFD3C3; -fx-background-radius: 15;");
+    }
+
+private void showGameResult(String result) {
+    Platform.runLater(() -> {
+        try {
+            if (FXMLLocalController.isTwoPlayers) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Game Over");
+                alert.setHeaderText(null);
+                switch (result) {
+                    case "win":
+                        alert.setContentText("Congratulations! Player1 wins.");
+                        break;
+                    case "lose":
+                        alert.setContentText("Congratulations! Player2 wins.");
+                        break;
+                    case "tie":
+                        alert.setContentText("It's a tie!");
+                        break;
+                }
+                alert.showAndWait();
+            } else {
+                FXMLLoader loader;
+                switch (result) {
+                    case "win":
+                        loader = new FXMLLoader(getClass().getResource("/alert/FXMLWinner.fxml"));
+                        break;
+                    case "lose":
+                        loader = new FXMLLoader(getClass().getResource("/alert/FXMLLoser.fxml"));
+                        break;
+                    case "tie":
+                        Alert tieAlert = new Alert(Alert.AlertType.INFORMATION);
+                        tieAlert.setTitle("Game Over");
+                        tieAlert.setHeaderText(null);
+                        tieAlert.setContentText("It's a tie!");
+                        tieAlert.showAndWait();
+                        return;
+                    default:
+                        return;
+                }
+
+                Parent root = loader.load();
+                MediaView mediaView;
+                final MediaPlayer mediaPlayer;
+
+                if (result.equals("win")) {
+                    FXMLWinnerController controller = loader.getController();
+                    mediaView = controller.getMediaView();
+                    Media winMedia = new Media(new File("D:\\3uToolsV3\\Top.Gun.Maverick.2022.720p.WEB-DL.AKWAM.mp4").toURI().toString());
+                    mediaPlayer = new MediaPlayer(winMedia);
+                } else {
+                    FXMLLoserController controller = loader.getController();
+                    mediaView = controller.getMediaView();
+Media loseMedia = new Media(new File("C:\\Users\\Muhamed Sultan\\Desktop\\Loser video.mp4").toURI().toString());
+                    mediaPlayer = new MediaPlayer(loseMedia);
+                }
+
+                mediaView.setMediaPlayer(mediaPlayer);
+                mediaView.setFitWidth(820);
+                mediaView.setFitHeight(450);
+                mediaPlayer.play();
+
+                Stage stage = new Stage();
+                stage.setTitle("Game Over");
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+
+                stage.setOnCloseRequest(event -> {
+                    if (mediaPlayer.getStatus().equals(MediaPlayer.Status.PLAYING)) {
+                        mediaPlayer.stop();
+                    }
+                });
+
+                stage.showAndWait();
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(FXMLGameWindowController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    });
+}
+    
+    
+    
+    
+    
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
