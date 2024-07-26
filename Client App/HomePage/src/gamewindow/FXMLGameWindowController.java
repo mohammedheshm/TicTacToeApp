@@ -82,6 +82,9 @@ public class FXMLGameWindowController implements Initializable {
     private final Image xImage = new Image(getClass().getResourceAsStream("/resources/x.png"));
     private final Image oImage = new Image(getClass().getResourceAsStream("/resources/o.png"));
     private final Image player2Image = new Image(getClass().getResourceAsStream("/resources/humanavatar1.png"));
+    Image winImage = new Image(getClass().getResourceAsStream("/resources/win.png"));
+        Image noWinner = new Image(getClass().getResourceAsStream("/resources/response.png"));
+
 
     @FXML
     public void handleBackHButton(ActionEvent event) {
@@ -398,16 +401,18 @@ public class FXMLGameWindowController implements Initializable {
                     alert.setHeaderText(null);
                     switch (result) {
                         case "win":
-                        alert.setContentText("Congratulations! " + (controller != null ? controller.getPlayer1Name() : "Player 1") + " wins.");
+                        Navigation.showAlert(null, "/alert/FXMLSingleButtonAlert.fxml",
+                                "Congratulations! "+ controller.getPlayer1Name()+"  win.", "Game Over", winImage);                       // alert.setContentText("Congratulations! " + (controller != null ? controller.getPlayer1Name() : "Player 1") + " wins.");
                             break;
                         case "lose":
-                        alert.setContentText("Congratulations! " + (controller != null ? controller.getPlayer2Name() : "Player 2") + " wins.");
-                            break;
+                        Navigation.showAlert(null, "/alert/FXMLSingleButtonAlert.fxml",
+                                "Congratulations! "+ controller.getPlayer2Name()+"  win.", "Game Over", winImage);                            break;
                         case "tie":
-                            alert.setContentText("It's a tie!");
+                            Navigation.showAlert(null, "/alert/FXMLSingleButtonAlert.fxml",
+                                "No Winner", "Game Over", noWinner);
                             break;
                     }
-                    alert.showAndWait();
+                   
                 } else {
                     FXMLLoader loader;
                     switch (result) {

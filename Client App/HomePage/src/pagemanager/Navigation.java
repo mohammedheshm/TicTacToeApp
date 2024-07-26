@@ -33,17 +33,33 @@ public class Navigation {
         }
     }
     
-        public static void showAlert(ActionEvent event, String fxmlPath, String message, String title, Image image) {
-        try {
-            FXMLLoader loader = new FXMLLoader(Navigation.class.getResource(fxmlPath));
-            Parent dialogRoot = loader.load();
+public static void showAlert(ActionEvent event, String fxmlPath, String message, String title, Image image) {
+    if (fxmlPath == null || fxmlPath.isEmpty()) {
+        System.err.println("FXML path is null or empty.");
+        return;
+    }
 
-            Stage dialogStage = new Stage();
-            dialogStage.setScene(new Scene(dialogRoot));
-            dialogStage.initStyle(StageStyle.UTILITY);
+    if (message == null) {
+        System.err.println("Message is null.");
+        return;
+    }
+
+    try {
+        FXMLLoader loader = new FXMLLoader(Navigation.class.getResource(fxmlPath));
+        Parent dialogRoot = loader.load();
+
+        Stage dialogStage = new Stage();
+        dialogStage.setScene(new Scene(dialogRoot));
+        dialogStage.initStyle(StageStyle.UTILITY);
+
+        if (event != null) {
             dialogStage.initOwner(((Node) event.getSource()).getScene().getWindow());
+        } else {
+            System.err.println("Event is null.");
+        }
 
-            Object controller = loader.getController();
+        Object controller = loader.getController();
+        if (controller != null) {
             try {
                 controller.getClass().getMethod("setDialogStage", Stage.class).invoke(controller, dialogStage);
                 controller.getClass().getMethod("setMessage", String.class).invoke(controller, message);
@@ -52,10 +68,13 @@ public class Navigation {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            dialogStage.showAndWait();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } else {
+            System.err.println("Controller is null.");
         }
+
+        dialogStage.showAndWait();
+    } catch (IOException e) {
+        e.printStackTrace();
     }
+}
 }
