@@ -19,7 +19,7 @@ public class FXMLHomeController implements Initializable {
     @FXML
     private void handleLocalModeButton(ActionEvent event) {
 
-        Navigation.nextPage(event, "/localpage/FXMLLocal.fxml");
+        Navigation.nextPage(event, "/localmodes/LocalModes.fxml");
 
     }
 

@@ -31,6 +31,7 @@ import javafx.scene.media.MediaView;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import localmodes.LocalModesController;
 import localpage.FXMLLocalController;
 import pagemanager.Navigation;
 
@@ -113,7 +114,7 @@ public class FXMLGameWindowController implements Initializable {
             makeMove(clickedButton, row, col, currentPlayer, currentImage);
 
             if (!gameWon && !isBoardFull()) {
-                if (FXMLLocalController.isTwoPlayers) {
+                if (LocalModesController.isTwoPlayers) {
                     isUserTurn = !isUserTurn;
                 } else {
                     isUserTurn = false;
@@ -391,7 +392,7 @@ public class FXMLGameWindowController implements Initializable {
     private void showGameResult(String result) {
         Platform.runLater(() -> {
             try {
-                if (FXMLLocalController.isTwoPlayers) {
+                if (LocalModesController.isTwoPlayers) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Game Over");
                     alert.setHeaderText(null);
@@ -473,7 +474,7 @@ public class FXMLGameWindowController implements Initializable {
         computerScoreText.setText(String.valueOf(computerScore));
         difficulty = FXMLLocalController.getDifficulty();
 
-        if (FXMLLocalController.isTwoPlayers) {
+        if (LocalModesController.isTwoPlayers) {
             showPlayerNameDialog();
             imageView.setImage(player2Image);
         } else {
