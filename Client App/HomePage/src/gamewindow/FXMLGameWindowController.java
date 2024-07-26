@@ -300,6 +300,75 @@ public class FXMLGameWindowController implements Initializable {
             highlightButton(2, 0);
         }
     }
+    
+    private void highlightButton(int row, int col) {
+        Button button = getButtonByRowCol(row, col);
+        if (button != null) {
+            button.setStyle("-fx-background-color: #9D886B;");
+        }
+    }
+
+    private Button getButtonByRowCol(int row, int col) {
+        switch (row) {
+            case 0:
+                switch (col) {
+                    case 0:
+                        return button00;
+                    case 1:
+                        return button01;
+                    case 2:
+                        return button02;
+                }
+                break;
+            case 1:
+                switch (col) {
+                    case 0:
+                        return button10;
+                    case 1:
+                        return button11;
+                    case 2:
+                        return button12;
+                }
+                break;
+            case 2:
+                switch (col) {
+                    case 0:
+                        return button20;
+                    case 1:
+                        return button21;
+                    case 2:
+                        return button22;
+                }
+                break;
+        }
+        return null;
+    }
+
+    private boolean isBoardFull() {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j] == null) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private void resetGame() {
+        board = new String[3][3];
+        resetButtonStyle(button00);
+        resetButtonStyle(button01);
+        resetButtonStyle(button02);
+        resetButtonStyle(button10);
+        resetButtonStyle(button11);
+        resetButtonStyle(button12);
+        resetButtonStyle(button20);
+        resetButtonStyle(button21);
+        resetButtonStyle(button22);
+        isUserTurn = true;
+        gameWon = false;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
