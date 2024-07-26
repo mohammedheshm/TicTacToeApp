@@ -5,32 +5,57 @@
  */
 package pagemanager;
 
+import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class Navigation {
     
     public static void nextPage(ActionEvent event, String fxmlPath) {
         try {
-            // Get the current stage
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             
-            // Load the new scene from FXML
             Parent newSceneRoot = FXMLLoader.load(Navigation.class.getResource(fxmlPath));
             
-            // Set the new scene
             Scene newScene = new Scene(newSceneRoot);
             stage.setScene(newScene);
             
-            // Show the new scene
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
-            // Handle the exception (e.g., show an error dialog)
+            
+        }
+    }
+    
+        public static void showAlert(ActionEvent event, String fxmlPath, String message, String title, Image image) {
+        try {
+            FXMLLoader loader = new FXMLLoader(Navigation.class.getResource(fxmlPath));
+            Parent dialogRoot = loader.load();
+
+            Stage dialogStage = new Stage();
+            dialogStage.setScene(new Scene(dialogRoot));
+            dialogStage.initStyle(StageStyle.UTILITY);
+            dialogStage.initOwner(((Node) event.getSource()).getScene().getWindow());
+
+            Object controller = loader.getController();
+            try {
+                controller.getClass().getMethod("setDialogStage", Stage.class).invoke(controller, dialogStage);
+                controller.getClass().getMethod("setMessage", String.class).invoke(controller, message);
+                controller.getClass().getMethod("setTitle", String.class).invoke(controller, title);
+                controller.getClass().getMethod("setImage", Image.class).invoke(controller, image);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            dialogStage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
