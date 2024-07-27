@@ -66,7 +66,7 @@ public static void showAlert(ActionEvent event, String fxmlPath, String message,
     }
 }
 
-public static boolean showPlayAgainAlert(ActionEvent event, String fxmlPath) {
+public static boolean showPlayAgainAlert(ActionEvent event,String message, String fxmlPath) {
     try {
         FXMLLoader loader = new FXMLLoader(Navigation.class.getResource(fxmlPath));
         Parent dialogRoot = loader.load();
@@ -82,6 +82,7 @@ public static boolean showPlayAgainAlert(ActionEvent event, String fxmlPath) {
             }
             
             controller.setDialogStage(dialogStage);
+            controller.setMessage(message);
             
             dialogStage.showAndWait();
             
