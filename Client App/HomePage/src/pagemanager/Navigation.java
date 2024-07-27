@@ -5,6 +5,7 @@
  */
 package pagemanager;
 
+import alert.FXMLPlayAgainDialogController;
 import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -64,4 +65,32 @@ public static void showAlert(ActionEvent event, String fxmlPath, String message,
         e.printStackTrace();
     }
 }
+
+public static boolean showPlayAgainAlert(ActionEvent event, String fxmlPath) {
+    try {
+        FXMLLoader loader = new FXMLLoader(Navigation.class.getResource(fxmlPath));
+        Parent dialogRoot = loader.load();
+        
+        FXMLPlayAgainDialogController controller = loader.getController();
+        if (controller != null) {
+            Stage dialogStage = new Stage();
+            dialogStage.setScene(new Scene(dialogRoot));
+            dialogStage.initStyle(StageStyle.UTILITY);
+            
+            if (event != null) {
+                dialogStage.initOwner(((Node) event.getSource()).getScene().getWindow());
+            }
+            
+            controller.setDialogStage(dialogStage);
+            
+            dialogStage.showAndWait();
+            
+            return controller.isOkClicked(); 
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    return false;
+}
+
 }
