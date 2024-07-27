@@ -101,17 +101,22 @@ public class FXMLGameWindowController implements Initializable {
 
     @FXML
     public void handleResetButton(ActionEvent event) {
-        if (!gameWon) {
-            boolean okClicked = Navigation.showPlayAgainAlert(event, "/alert/FXMLPlayAgainDialog.fxml");
-            if (okClicked && userScore > 0) {
-                userScore--;
-                userScoreText.setText(String.valueOf(userScore));
-                resetGame();
-            } else if (okClicked) {
+
+        if (LocalModesController.isTwoPlayers) {
+            resetGame();
+        } else {
+            if (!gameWon) {
+                boolean okClicked = Navigation.showPlayAgainAlert(event, "You Will Lose The Game","/alert/FXMLPlayAgainDialog.fxml");
+                if (okClicked && userScore > 0) {
+                    userScore--;
+                    userScoreText.setText(String.valueOf(userScore));
+                    resetGame();
+                } else if (okClicked) {
+                    resetGame();
+                }
+            } else {
                 resetGame();
             }
-        } else {
-            resetGame();
         }
     }
 
