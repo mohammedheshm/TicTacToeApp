@@ -172,8 +172,6 @@ public class FXMLGameWindowController implements Initializable {
         if (checkWin()) {
             highlightWinningButtons();
             gameWon = true;
-            computerScore++;
-
         } else if (isBoardFull()) {
             showGameResult("tie");
             resetGame();
@@ -393,9 +391,6 @@ public class FXMLGameWindowController implements Initializable {
         Platform.runLater(() -> {
             try {
                 if (LocalModesController.isTwoPlayers) {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Game Over");
-                    alert.setHeaderText(null);
                     switch (result) {
                         case "win":
                            String playerName1 = controller.getPlayer1Name();
