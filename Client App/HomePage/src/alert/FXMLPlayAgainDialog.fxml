@@ -32,7 +32,7 @@
             <Font name="System Bold" size="15.0" />
          </font>
       </Button>
-      <Text fx:id="messageLabel" fill="#8d493a" fontSmoothingType="LCD" layoutX="50.0" layoutY="120.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You will lose the game " textAlignment="CENTER" wrappingWidth="313.9140625">
+      <Text fx:id="messageText" fill="#8d493a" fontSmoothingType="LCD" layoutX="50.0" layoutY="120.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="313.9140625">
          <font>
             <Font name="Arial Bold" size="20.0" />
          </font>

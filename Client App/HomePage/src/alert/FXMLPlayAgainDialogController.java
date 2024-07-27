@@ -2,14 +2,15 @@ package alert;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class FXMLPlayAgainDialogController {
 
-    @FXML
-    private Button okButton;
-    @FXML
-    private Button cancelButton;
+
+     @FXML
+    private Text messageText;
 
     private Stage dialogStage;
     private boolean okClicked = false;
@@ -20,6 +21,11 @@ public class FXMLPlayAgainDialogController {
 
     public void setDialogStage(Stage dialogStage) {
         this.dialogStage = dialogStage;
+    }
+    
+    public void setMessage(String message) {
+            messageText.setText(message);
+        
     }
 
     public boolean isOkClicked() {
@@ -35,6 +41,7 @@ private void handleOkButton() {
         System.out.println("dialogStage is null");
     }
 }
+
 
 
     @FXML
