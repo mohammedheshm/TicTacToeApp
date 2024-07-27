@@ -83,16 +83,15 @@ public class FXMLGameWindowController implements Initializable {
     private final Image oImage = new Image(getClass().getResourceAsStream("/resources/o.png"));
     private final Image player2Image = new Image(getClass().getResourceAsStream("/resources/humanavatar1.png"));
     Image winImage = new Image(getClass().getResourceAsStream("/resources/win.png"));
-        Image noWinner = new Image(getClass().getResourceAsStream("/resources/response.png"));
-
+    Image noWinner = new Image(getClass().getResourceAsStream("/resources/response.png"));
 
     @FXML
     public void handleBackHButton(ActionEvent event) {
-        if(LocalModesController.isTwoPlayers){
-          Navigation.nextPage(event, "/localmodes/LocalModes.fxml");
-        }else {
-        Navigation.nextPage(event, "/localpage/FXMLLocal.fxml");
-    }
+        if (LocalModesController.isTwoPlayers) {
+            Navigation.nextPage(event, "/localmodes/LocalModes.fxml");
+        } else {
+            Navigation.nextPage(event, "/localpage/FXMLLocal.fxml");
+        }
     }
 
     @FXML
@@ -102,7 +101,18 @@ public class FXMLGameWindowController implements Initializable {
 
     @FXML
     public void handleResetButton(ActionEvent event) {
-        resetGame();
+        if (!gameWon) {
+            boolean okClicked = Navigation.showPlayAgainAlert(event, "/alert/FXMLPlayAgainDialog.fxml");
+            if (okClicked && userScore > 0) {
+                userScore--;
+                userScoreText.setText(String.valueOf(userScore));
+                resetGame();
+            } else if (okClicked) {
+                resetGame();
+            }
+        } else {
+            resetGame();
+        }
     }
 
     @FXML
@@ -393,21 +403,21 @@ public class FXMLGameWindowController implements Initializable {
                 if (LocalModesController.isTwoPlayers) {
                     switch (result) {
                         case "win":
-                           String playerName1 = controller.getPlayer1Name();
-                       String player1Message = "Congratulations! " + (!playerName1.isEmpty() ? playerName1 : "Player 1") + " wins.";
-                        Navigation.showAlert(null, "/alert/FXMLSingleButtonAlert.fxml", player1Message, "Game Over", winImage);
-                        break;
-                    case "lose":
-                        String playerName2 = controller.getPlayer2Name();
-                       String player2Message = "Congratulations! " + (!playerName2.isEmpty() ? playerName2 : "Player 2") + " wins.";
-                        Navigation.showAlert(null, "/alert/FXMLSingleButtonAlert.fxml", player2Message, "Game Over", winImage);
-                        break;
+                            String playerName1 = controller.getPlayer1Name();
+                            String player1Message = "Congratulations! " + (!playerName1.isEmpty() ? playerName1 : "Player 1") + " wins.";
+                            Navigation.showAlert(null, "/alert/FXMLSingleButtonAlert.fxml", player1Message, "Game Over", winImage);
+                            break;
+                        case "lose":
+                            String playerName2 = controller.getPlayer2Name();
+                            String player2Message = "Congratulations! " + (!playerName2.isEmpty() ? playerName2 : "Player 2") + " wins.";
+                            Navigation.showAlert(null, "/alert/FXMLSingleButtonAlert.fxml", player2Message, "Game Over", winImage);
+                            break;
                         case "tie":
                             Navigation.showAlert(null, "/alert/FXMLSingleButtonAlert.fxml",
-                                "No Winner", "Game Over", noWinner);
+                                    "No Winner", "Game Over", noWinner);
                             break;
                     }
-                   
+
                 } else {
                     FXMLLoader loader;
                     switch (result) {
@@ -418,8 +428,8 @@ public class FXMLGameWindowController implements Initializable {
                             loader = new FXMLLoader(getClass().getResource("/alert/FXMLLoser.fxml"));
                             break;
                         case "tie":
-                           Navigation.showAlert(null, "/alert/FXMLSingleButtonAlert.fxml",
-                                "No Winner", "Game Over", noWinner);
+                            Navigation.showAlert(null, "/alert/FXMLSingleButtonAlert.fxml",
+                                    "No Winner", "Game Over", noWinner);
                             return;
                         default:
                             return;
