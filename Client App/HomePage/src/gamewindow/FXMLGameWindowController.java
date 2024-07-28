@@ -107,9 +107,9 @@ public class FXMLGameWindowController implements Initializable {
         } else {
             if (!gameWon) {
                 boolean okClicked = Navigation.showPlayAgainAlert(event, "You Will Lose The Game","/alert/FXMLPlayAgainDialog.fxml");
-                if (okClicked && userScore > 0) {
-                    userScore--;
-                    userScoreText.setText(String.valueOf(userScore));
+                if (okClicked ) {
+                    computerScore++;
+                    computerScoreText.setText(String.valueOf(computerScore));
                     resetGame();
                 } else if (okClicked) {
                     resetGame();
