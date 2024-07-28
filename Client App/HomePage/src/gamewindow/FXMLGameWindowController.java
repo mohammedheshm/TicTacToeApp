@@ -88,7 +88,17 @@ public class FXMLGameWindowController implements Initializable {
     @FXML
     public void handleBackHButton(ActionEvent event) {
         if (LocalModesController.isTwoPlayers) {
+           if(!gameWon){
+                  boolean okClicked = Navigation.showQuitAlert(event, "Do You Want to Quit The Game","Yes","/alert/FXMLPlayAgainDialog.fxml");
+                if (okClicked ) {
             Navigation.nextPage(event, "/localmodes/LocalModes.fxml");
+
+                } 
+        
+            }else{
+            Navigation.nextPage(event, "/localmodes/LocalModes.fxml");
+
+            }
         } else {
             if(!gameWon){
                   boolean okClicked = Navigation.showQuitAlert(event, "Do You Want to Quit The Game","Yes","/alert/FXMLPlayAgainDialog.fxml");
