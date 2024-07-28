@@ -6,6 +6,7 @@
 package pagemanager;
 
 import alert.FXMLPlayAgainDialogController;
+import alert.FXMLSingleButtonAlertController;
 import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -48,7 +49,7 @@ public static void showAlert(ActionEvent event, String fxmlPath, String message,
             dialogStage.initOwner(((Node) event.getSource()).getScene().getWindow());
         }
 
-        Object controller = loader.getController();
+        FXMLSingleButtonAlertController controller = loader.getController();
         if (controller != null) {
             try {
                 controller.getClass().getMethod("setDialogStage", Stage.class).invoke(controller, dialogStage);
@@ -66,7 +67,7 @@ public static void showAlert(ActionEvent event, String fxmlPath, String message,
     }
 }
 
-public static boolean showPlayAgainAlert(ActionEvent event,String message, String fxmlPath) {
+public static boolean showQuitAlert(ActionEvent event,String message,String btnText, String fxmlPath) {
     try {
         FXMLLoader loader = new FXMLLoader(Navigation.class.getResource(fxmlPath));
         Parent dialogRoot = loader.load();
@@ -83,6 +84,7 @@ public static boolean showPlayAgainAlert(ActionEvent event,String message, Strin
             
             controller.setDialogStage(dialogStage);
             controller.setMessage(message);
+            controller.setButtonText(btnText);
             
             dialogStage.showAndWait();
             
