@@ -90,9 +90,21 @@ public class FXMLGameWindowController implements Initializable {
         if (LocalModesController.isTwoPlayers) {
             Navigation.nextPage(event, "/localmodes/LocalModes.fxml");
         } else {
-            Navigation.nextPage(event, "/localpage/FXMLLocal.fxml");
+            if(!gameWon){
+                  boolean okClicked = Navigation.showQuitAlert(event, "Do You Want to Quit The Game","Yes","/alert/FXMLPlayAgainDialog.fxml");
+                if (okClicked ) {
+        Navigation.nextPage(event, "/localpage/FXMLLocal.fxml");
+
+                } 
+        
+            }else{
+                        Navigation.nextPage(event, "/localpage/FXMLLocal.fxml");
+
+            }
         }
     }
+        
+    
 
     @FXML
     public void handleScreenShootButton(ActionEvent event) {
@@ -106,7 +118,7 @@ public class FXMLGameWindowController implements Initializable {
             resetGame();
         } else {
             if (!gameWon) {
-                boolean okClicked = Navigation.showPlayAgainAlert(event, "You Will Lose The Game","/alert/FXMLPlayAgainDialog.fxml");
+                boolean okClicked = Navigation.showQuitAlert(event, "You Will Lose The Game","Ok","/alert/FXMLPlayAgainDialog.fxml");
                 if (okClicked ) {
                     computerScore++;
                     computerScoreText.setText(String.valueOf(computerScore));
