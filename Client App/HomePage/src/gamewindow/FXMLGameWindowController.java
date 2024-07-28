@@ -39,6 +39,7 @@ public class FXMLGameWindowController implements Initializable {
 
     private String[][] board = new String[3][3];
     private boolean isUserTurn = true;
+    private boolean isComputerTurn=false;
     private int userScore = 0;
     private int computerScore = 0;
     private boolean gameWon = false;
@@ -88,33 +89,31 @@ public class FXMLGameWindowController implements Initializable {
     @FXML
     public void handleBackHButton(ActionEvent event) {
         if (LocalModesController.isTwoPlayers) {
-           if(!gameWon){
-                  boolean okClicked = Navigation.showQuitAlert(event, "Do You Want to Quit The Game","Yes","/alert/FXMLPlayAgainDialog.fxml");
-                if (okClicked ) {
-            Navigation.nextPage(event, "/localmodes/LocalModes.fxml");
+            if (!gameWon) {
+                boolean okClicked = Navigation.showQuitAlert(event, "Do You Want to Quit The Game", "Yes", "/alert/FXMLPlayAgainDialog.fxml");
+                if (okClicked) {
+                    Navigation.nextPage(event, "/localmodes/LocalModes.fxml");
 
-                } 
-        
-            }else{
-            Navigation.nextPage(event, "/localmodes/LocalModes.fxml");
+                }
+
+            } else {
+                Navigation.nextPage(event, "/localmodes/LocalModes.fxml");
 
             }
         } else {
-            if(!gameWon){
-                  boolean okClicked = Navigation.showQuitAlert(event, "Do You Want to Quit The Game","Yes","/alert/FXMLPlayAgainDialog.fxml");
-                if (okClicked ) {
-        Navigation.nextPage(event, "/localpage/FXMLLocal.fxml");
+            if (!gameWon) {
+                boolean okClicked = Navigation.showQuitAlert(event, "Do You Want to Quit The Game", "Yes", "/alert/FXMLPlayAgainDialog.fxml");
+                if (okClicked) {
+                    Navigation.nextPage(event, "/localpage/FXMLLocal.fxml");
 
-                } 
-        
-            }else{
-                        Navigation.nextPage(event, "/localpage/FXMLLocal.fxml");
+                }
+
+            } else {
+                Navigation.nextPage(event, "/localpage/FXMLLocal.fxml");
 
             }
         }
     }
-        
-    
 
     @FXML
     public void handleScreenShootButton(ActionEvent event) {
@@ -128,8 +127,8 @@ public class FXMLGameWindowController implements Initializable {
             resetGame();
         } else {
             if (!gameWon) {
-                boolean okClicked = Navigation.showQuitAlert(event, "You Will Lose The Game","Ok","/alert/FXMLPlayAgainDialog.fxml");
-                if (okClicked ) {
+                boolean okClicked = Navigation.showQuitAlert(event, "You Will Lose The Game", "Ok", "/alert/FXMLPlayAgainDialog.fxml");
+                if (okClicked) {
                     computerScore++;
                     computerScoreText.setText(String.valueOf(computerScore));
                     resetGame();
@@ -144,7 +143,7 @@ public class FXMLGameWindowController implements Initializable {
 
     @FXML
     public void handleButtonClick(ActionEvent event) {
-        if (gameWon) {
+        if (gameWon || isComputerTurn) {
             return;
         }
 
@@ -162,8 +161,12 @@ public class FXMLGameWindowController implements Initializable {
                     isUserTurn = !isUserTurn;
                 } else {
                     isUserTurn = false;
-                    PauseTransition pause = new PauseTransition(Duration.seconds(1));
-                    pause.setOnFinished(event1 -> computerMove());
+                    isComputerTurn=true;
+                    PauseTransition pause = new PauseTransition(Duration.seconds(.5));
+                    pause.setOnFinished(event1 ->{
+                     computerMove();
+                    // isComputerTurn=false;
+                });
                     pause.play();
                 }
             }
