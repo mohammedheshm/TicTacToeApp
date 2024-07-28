@@ -39,7 +39,7 @@ public class FXMLGameWindowController implements Initializable {
 
     private String[][] board = new String[3][3];
     private boolean isUserTurn = true;
-    private boolean isComputerTurn=false;
+    private boolean isComputerTurn = false;
     private int userScore = 0;
     private int computerScore = 0;
     private boolean gameWon = false;
@@ -161,12 +161,12 @@ public class FXMLGameWindowController implements Initializable {
                     isUserTurn = !isUserTurn;
                 } else {
                     isUserTurn = false;
-                    isComputerTurn=true;
+                    isComputerTurn = true;
                     PauseTransition pause = new PauseTransition(Duration.seconds(.5));
-                    pause.setOnFinished(event1 ->{
-                     computerMove();
-                    // isComputerTurn=false;
-                });
+                    pause.setOnFinished(event1 -> {
+                        computerMove();
+                         isComputerTurn = false;
+                    });
                     pause.play();
                 }
             }
