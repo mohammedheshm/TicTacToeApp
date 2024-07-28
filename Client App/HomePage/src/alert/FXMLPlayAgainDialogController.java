@@ -11,6 +11,9 @@ public class FXMLPlayAgainDialogController {
 
      @FXML
     private Text messageText;
+     
+     @FXML
+    private Button btnText;
 
     private Stage dialogStage;
     private boolean okClicked = false;
@@ -25,6 +28,11 @@ public class FXMLPlayAgainDialogController {
     
     public void setMessage(String message) {
             messageText.setText(message);
+        
+    }
+    
+    public void setButtonText(String text) {
+            btnText.setText(text);
         
     }
 

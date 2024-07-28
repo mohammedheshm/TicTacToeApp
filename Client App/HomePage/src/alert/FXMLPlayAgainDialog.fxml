@@ -27,7 +27,7 @@
             </ImageView>
          </children>
       </AnchorPane>
-      <Button layoutX="331.0" layoutY="146.0" mnemonicParsing="false" onAction="#handleOkButton" prefHeight="31.0" prefWidth="63.0" style="-fx-background-color: #D0B8A8; -fx-background-radius: 12px;" text="Ok" textFill="#8d493a">
+      <Button fx:id="btnText" layoutX="331.0" layoutY="146.0" mnemonicParsing="false" onAction="#handleOkButton" prefHeight="31.0" prefWidth="63.0" style="-fx-background-color: #D0B8A8; -fx-background-radius: 12px;" text="Ok" textFill="#8d493a">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
