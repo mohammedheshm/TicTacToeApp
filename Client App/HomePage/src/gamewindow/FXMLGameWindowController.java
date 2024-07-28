@@ -488,6 +488,7 @@ public class FXMLGameWindowController implements Initializable {
 
                     Stage stage = new Stage();
                     stage.setTitle("Game Over");
+                    stage.setResizable(false);
                     Scene scene = new Scene(root);
                     stage.setScene(scene);
 
