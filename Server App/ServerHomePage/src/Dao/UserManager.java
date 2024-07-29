@@ -69,7 +69,7 @@ public class UserManager {
 }
 
 
-    // Method to register a new user
+    // register a new user
     public static boolean registerUser(String username, String password, String email) {
         String sql = "INSERT INTO Users (username, password, email) VALUES (?, ?, ?)";
         try (Connection connection = DatabaseConnection.getConnection();
@@ -167,7 +167,7 @@ public class UserManager {
         }
         return user;
     }
-
+////login logic
     public static boolean validateUser(String useremail, String password) {
         String sql = "SELECT * FROM Users WHERE email = ? AND password = ?";
 
