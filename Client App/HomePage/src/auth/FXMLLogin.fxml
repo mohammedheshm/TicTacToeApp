@@ -24,14 +24,14 @@
                         <Font name="System Bold" size="16.0" />
                      </font>
                   </Text>
-                  <TextField layoutX="45.0" layoutY="130.0" prefHeight="38.0" prefWidth="228.0" style="-fx-background-radius: 9px; -fx-border-width: 1; -fx-border-radius: 9px; -fx-border-color: #8d493a; -fx-background-color: #F8EDE3;" />
+                  <TextField fx:id="emailField" layoutX="45.0" layoutY="130.0" prefHeight="38.0" prefWidth="228.0" style="-fx-background-radius: 9px; -fx-border-width: 1; -fx-border-radius: 9px; -fx-border-color: #8d493a; -fx-background-color: #F8EDE3;" />
                   <Text fill="#8d493a" layoutX="46.0" layoutY="208.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password" wrappingWidth="88.6708984375">
                      <font>
                         <Font name="System Bold" size="16.0" />
                      </font>
                   </Text>
-                  <TextField layoutX="45.0" layoutY="223.0" prefHeight="38.0" prefWidth="228.0" style="-fx-background-radius: 9px; -fx-border-color: #8d493a; -fx-background-color: #F8EDE3; -fx-border-width: 1; -fx-border-radius: 9px;" />
-                  <Button layoutX="88.0" layoutY="279.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="143.0" style="-fx-border-color: #8d493a; -fx-border-width: 2px; -fx-background-radius: 10px; -fx-border-radius: 10px; -fx-background-color: transparent;" text="Login" textFill="#8d493a">
+                  <TextField fx:id="passwordField" layoutX="45.0" layoutY="223.0" prefHeight="38.0" prefWidth="228.0" style="-fx-background-radius: 9px; -fx-border-color: #8d493a; -fx-background-color: #F8EDE3; -fx-border-width: 1; -fx-border-radius: 9px;" />
+                  <Button layoutX="88.0" layoutY="279.0" mnemonicParsing="false" onAction="#handleLoginButton" prefHeight="38.0" prefWidth="143.0" style="-fx-border-color: #8d493a; -fx-border-width: 2px; -fx-background-radius: 10px; -fx-border-radius: 10px; -fx-background-color: transparent;" text="Login" textFill="#8d493a">
                      <font>
                         <Font name="Arial Bold" size="17.0" />
                      </font>
@@ -52,25 +52,16 @@
                <image>
                   <Image url="@../resources/xologo.png" />
                </image></ImageView>
-       
-
-
- 
-      
-
          </children>
       </AnchorPane>
-   
-           <!-- Button with Image -->
-  <Button layoutX="19.0" layoutY="432.0" mnemonicParsing="false" onAction="#handleBackHButton" prefHeight="44.0" prefWidth="44.0" scaleShape="false" styleClass="round-button">
+      <Button layoutX="19.0" layoutY="432.0" mnemonicParsing="false" onAction="#handleBackHButton" prefHeight="44.0" prefWidth="44.0" scaleShape="false" styleClass="round-button">
          <graphic>
-      <ImageView fitHeight="44.0" fitWidth="48.0" preserveRatio="true">
-         <image>
-            <Image url="@../resources/arrowb.png" />
-         </image>
-      </ImageView>
-         </graphic></Button>
-
-   
+            <ImageView fitHeight="44.0" fitWidth="48.0" preserveRatio="true">
+               <image>
+                  <Image url="@../resources/arrowb.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
    </children>
 </AnchorPane>
