@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.image.Image?>
@@ -45,9 +44,4 @@
          <Image url="@../resources/offline.png" />
       </image>
    </ImageView>
-   <ScrollPane prefHeight="200.0" prefWidth="200.0">
-     <content>
-       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
-     </content>
-   </ScrollPane>
 </AnchorPane>
