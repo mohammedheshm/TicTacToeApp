@@ -1,0 +1,9 @@
+User: Player1
+Computer: Computer
+User Score: 1
+Computer Score: 0
+0 X 0,0
+1 O 2,0
+2 X 1,1
+3 O 0,1
+4 X 2,2
