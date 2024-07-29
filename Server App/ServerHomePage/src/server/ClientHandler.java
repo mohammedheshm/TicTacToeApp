@@ -36,29 +36,21 @@ public class ClientHandler implements Runnable {
                 handleClientMessage(message);
             }
         } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                clientSocket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (clientSocket.isClosed()) {
+                System.out.println("Connection closed: " + e.getMessage());
+            } else {
+                System.err.println("IOException occurred: " + e.getMessage());
             }
+        } finally {
+            stop();
         }
     }
 
     private void handleClientMessage(String message) {
+        System.out.println("Received message: " + message);
         String[] parts = message.split(":");
 
         switch (parts[0]) {
-            case "INVITE":
-                handleInvite(parts[1]);
-                break;
-            case "ACCEPT_INVITE":
-                handleAcceptInvite(parts[1]);
-                break;
-            case "DECLINE_INVITE":
-                handleDeclineInvite(parts[1]);
-                break;
             case "MOVE":
                 handleMove(Integer.parseInt(parts[1]), Integer.parseInt(parts[2]), Integer.parseInt(parts[3]));
                 break;
@@ -78,48 +70,18 @@ public class ClientHandler implements Runnable {
             case "GETALLONLINE":
                 handleGetAll(parts[1]);
                 break;
+            case "INVITE":
+                handleInvite(parts[1], parts[2]);
+                break;
+            case "INVITE_ACCEPT":
+                handleInviteResponse(parts[1], true);
+                break;
+            case "INVITE_REJECT":
+                handleInviteResponse(parts[1], false);
+                break;
             default:
                 System.out.println("Unknown message type: " + parts[0]);
         }
-    }
-
-    private void handleInvite(String invitedUser) {
-        boolean inviteSent = false;
-        for (ClientHandler client : server.getClients()) {
-            if (client.getUseremail() != null && client.getUseremail().equals(invitedUser)) {
-                client.sendMessage("INVITE_REQUEST:" + useremail);
-                inviteSent = true;
-                break;
-            }
-        }
-        if (inviteSent) {
-            sendMessage("INVITE_SENT");
-        } else {
-            sendMessage("INVITE_FAIL");
-        }
-    }
-
-    private void handleAcceptInvite(String invitingUser) {
-        for (ClientHandler client : server.getClients()) {
-            if (client.getUseremail().equals(invitingUser)) {
-                int gameId = server.createNewGame(useremail, invitingUser);
-                client.sendMessage("START_GAME:" + gameId + ":" + useremail);
-                sendMessage("START_GAME:" + gameId + ":" + invitingUser);
-                return;
-            }
-        }
-        sendMessage("INVITE_NOT_FOUND");
-    }
-
-    private void handleDeclineInvite(String invitingUser) {
-        for (ClientHandler client : server.getClients()) {
-            if (client.getUseremail().equals(invitingUser)) {
-                client.sendMessage("INVITE_DECLINED:" + useremail);
-                sendMessage("INVITE_DECLINED");
-                return;
-            }
-        }
-        sendMessage("INVITE_NOT_FOUND");
     }
 
     private void handleMove(int gameId, int row, int col) {
@@ -172,20 +134,6 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    public void sendMessage(String message) {
-        out.println(message);
-    }
-
-    public String getUseremail() {
-        return useremail;
-    }
-
-    public void stop() throws IOException {
-        if (clientSocket != null && !clientSocket.isClosed()) {
-            clientSocket.close();
-        }
-    }
-
     private void handleISEXIST(String email) {
         System.out.println("Checking existence for email: " + email);
         boolean isExist = UserManager.isExist(email);
@@ -211,6 +159,47 @@ public class ClientHandler implements Runnable {
             sendMessage(msg.toString());
         } else {
             sendMessage("NO_USERS_TO_SHOW");
+        }
+    }
+
+    private void handleInvite(String fromUser, String toUser) {
+        // Send invitation to the specified user
+        // You might need to keep track of the invitations in a data structure or send to specific users
+        System.out.println("Invitation from " + fromUser + " to " + toUser);
+        // Check if the 'toUser' is online
+        if (server.isUserOnline(toUser)) {
+            // Inform the 'toUser' about the invitation
+            server.sendMessageToUser(toUser, "INVITE:" + fromUser);
+            sendMessage("INVITE_SENT");
+        } else {
+            sendMessage("USER_OFFLINE");
+        }
+    }
+
+    private void handleInviteResponse(String fromUser, boolean accepted) {
+        // Respond to the sender based on the invite response
+        if (accepted) {
+            sendMessage("INVITE_ACCEPTED:" + fromUser);
+        } else {
+            sendMessage("INVITE_REJECTED:" + fromUser);
+        }
+    }
+
+    public void sendMessage(String message) {
+        out.println(message);
+    }
+
+    public String getUseremail() {
+        return useremail;
+    }
+
+    public void stop() {
+        try {
+            if (clientSocket != null && !clientSocket.isClosed()) {
+                clientSocket.close();
+            }
+        } catch (IOException e) {
+            System.err.println("Error closing socket: " + e.getMessage());
         }
     }
 }

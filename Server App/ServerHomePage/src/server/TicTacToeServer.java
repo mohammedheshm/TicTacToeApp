@@ -24,30 +24,39 @@ public class TicTacToeServer {
         this.clientMap = new ConcurrentHashMap<>();
     }
 
-    public void start() throws IOException {
-        serverSocket = new ServerSocket(PORT);
-        running = true;
-        System.out.println("Server started on port: " + PORT);
+    public void start() {
+        try {
+            serverSocket = new ServerSocket(PORT);
+            running = true;
+            System.out.println("Server started on port: " + PORT);
 
-        while (running) {
-            try {
-                Socket clientSocket = serverSocket.accept();
-                ClientHandler clientHandler = new ClientHandler(clientSocket, this);
-                clients.add(clientHandler);
-                new Thread(clientHandler).start();
-            } catch (IOException e) {
-                if (running) {
-                    System.err.println("Error accepting client connection: " + e.getMessage());
+            while (running) {
+                try {
+                    Socket clientSocket = serverSocket.accept();
+                    ClientHandler clientHandler = new ClientHandler(clientSocket, this);
+                    clients.add(clientHandler);
+                    new Thread(clientHandler).start();
+                } catch (IOException e) {
+                    if (running) {
+                        System.err.println("Error accepting client connection: " + e.getMessage());
+                    }
                 }
-                break;
             }
+        } catch (IOException e) {
+            System.err.println("Error starting server: " + e.getMessage());
+        } finally {
+            stop();
         }
     }
 
-    public void stop() throws IOException {
+    public void stop() {
         running = false;
-        if (serverSocket != null && !serverSocket.isClosed()) {
-            serverSocket.close();
+        try {
+            if (serverSocket != null && !serverSocket.isClosed()) {
+                serverSocket.close();
+            }
+        } catch (IOException e) {
+            System.err.println("Error closing server socket: " + e.getMessage());
         }
         for (ClientHandler client : clients) {
             client.stop();
@@ -56,7 +65,7 @@ public class TicTacToeServer {
     }
 
     public List<ClientHandler> getClients() {
-        return clients;
+        return new ArrayList<>(clients);
     }
 
     public int createNewGame(String player1, String player2) {
@@ -110,5 +119,18 @@ public class TicTacToeServer {
 
     public void registerClient(String username, ClientHandler clientHandler) {
         clientMap.put(username, clientHandler);
+    }
+
+    public boolean isUserOnline(String username) {
+        return clientMap.containsKey(username);
+    }
+
+    public void sendMessageToUser(String username, String message) {
+        ClientHandler clientHandler = clientMap.get(username);
+        if (clientHandler != null) {
+            clientHandler.sendMessage(message);
+        } else {
+            System.out.println("User " + username + " not found.");
+        }
     }
 }
