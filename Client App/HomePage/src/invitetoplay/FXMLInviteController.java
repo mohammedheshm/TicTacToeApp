@@ -17,6 +17,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import serverconnection.ServerConnect;
 import models.User;
+import pagemanager.Navigation;
 
 public class FXMLInviteController {
 
@@ -33,7 +34,7 @@ public class FXMLInviteController {
     private TableColumn<User, String> statusColumn;
 
     private String userEmail = FXMLLoginController.userEmail;
-
+    private String user2Email;
     private static ScheduledExecutorService scheduler;
 
     @FXML
@@ -72,7 +73,7 @@ public class FXMLInviteController {
 
             handelServerMessage();
 
-        } catch (IOException ex) {
+        } catch (IOException e) {
             showAlert("Error", "Unable to load user data.");
         }
     }
@@ -116,7 +117,22 @@ public class FXMLInviteController {
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
-        alert.showAndWait();
+
+        ButtonType acceptButton = new ButtonType("Accept");
+        ButtonType refuseButton = new ButtonType("Refuse");
+        alert.getButtonTypes().setAll(acceptButton, refuseButton);
+        alert.showAndWait().ifPresent(response -> {
+            if (response == acceptButton) {
+                String msg1 = "ACCEPT_INVITE:" + userEmail + ":" + user2Email;
+                ServerConnect.sendMessage(msg1);
+            } else if (response == refuseButton) {
+                String msg2 = "DECLINE_INVITE:" + userEmail + ":" + user2Email;
+                ServerConnect.sendMessage(msg2);
+
+            }
+            handelServerMessage();
+        });
+
     }
 
     public static void shutdown() {
@@ -129,13 +145,28 @@ public class FXMLInviteController {
         try {
             String response = ServerConnect.receiveMessage();
             String[] responseArr = response.split(":");
-            if (responseArr.length == 4) {
+
+            if (responseArr.length >= 4) { // solve error in this line
                 updateView(responseArr);
             } else {
                 switch (responseArr[0]) {
                     case "INVITE_REQUEST":
+                        this.user2Email = responseArr[1];
                         showAlert(responseArr[0], responseArr[1] + " Want To Play With you");
+                        break;
+                    case "ACCEPT_INVITE":
+                        showAlert(responseArr[0], responseArr[1] + " Accept To Pplay With You");
+                        // Navigation.nextPage(null, "/gamewindow/FXMLGameWindow.fxml");
+                        break;
+                    case "DECLINE_INVITE":
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Decline Invitation from  " + responseArr[1]);
+                        alert.setHeaderText(null);
+                        alert.setContentText("I don't wan't play now");
+                        alert.showAndWait();
+                        break;
                 }
+
             }
 
         } catch (IOException ex) {
