@@ -17,7 +17,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import serverconnection.ServerConnect;
 import models.User;
-import pagemanager.Navigation;
 
 public class FXMLInviteController {
 
@@ -32,7 +31,6 @@ public class FXMLInviteController {
 
     @FXML
     private TableColumn<User, String> statusColumn;
-
     private String userEmail = FXMLLoginController.userEmail;
     private String user2Email;
     private static ScheduledExecutorService scheduler;
@@ -146,7 +144,7 @@ public class FXMLInviteController {
             String response = ServerConnect.receiveMessage();
             String[] responseArr = response.split(":");
 
-            if (responseArr.length >= 4) { // solve error in this line
+            if (responseArr.length >= 4) { 
                 updateView(responseArr);
             } else {
                 switch (responseArr[0]) {
