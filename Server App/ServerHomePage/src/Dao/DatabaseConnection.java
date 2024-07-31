@@ -18,7 +18,7 @@ public class DatabaseConnection {
     private static final String PASSWORD = "root";
     private static Connection theConnection;
 
-    public static void openConnection() {
+    public static void openConnection(){
         try {
             if (theConnection == null || theConnection.isClosed()) {
                 theConnection = DriverManager.getConnection(URL, USER, PASSWORD);
