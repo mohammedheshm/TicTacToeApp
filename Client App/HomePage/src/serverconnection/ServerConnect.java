@@ -23,11 +23,10 @@ public class ServerConnect {
             socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            
-            new Thread(){
-                public void run()
-                {
-                    while (running) {                        
+            running = true;
+            new Thread() {
+                public void run() {
+                    while (running) {
                         try {
                             String msg = in.readLine();
                             System.out.println(msg);
