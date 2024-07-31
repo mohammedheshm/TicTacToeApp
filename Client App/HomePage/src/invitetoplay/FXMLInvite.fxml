@@ -28,7 +28,7 @@
         </graphic>
     </Button>
     
-    <Button fx:id="inviteButton" layoutX="216.0" layoutY="374.0" mnemonicParsing="false" onAction="#handleInviteButton" prefHeight="38.0" prefWidth="171.0" style="-fx-border-color: #8d493a; -fx-border-width: 1.5; -fx-background-radius: 10px; -fx-border-radius: 10px; -fx-background-color: #F8EDE3;" text="Invite to play" textFill="#8d493a">
+    <Button fx:id="inviteButton" layoutX="217.0" layoutY="374.0" mnemonicParsing="false" onAction="#handleInviteButton" prefHeight="38.0" prefWidth="171.0" style="-fx-border-color: #8d493a; -fx-border-width: 1.5; -fx-background-radius: 10px; -fx-border-radius: 10px; -fx-background-color: #F8EDE3;" text="Invite to play" textFill="#8d493a">
         <font>
             <Font name="Arial Bold" size="17.0" />
         </font>

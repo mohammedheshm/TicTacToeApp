@@ -32,17 +32,16 @@ public class FXMLInviteController {
     @FXML
     private TableColumn<User, String> statusColumn;
 
-
     private String userEmail = FXMLLoginController.userEmail;
-    
-    private static ScheduledExecutorService  scheduler;
+
+    private static ScheduledExecutorService scheduler;
 
     @FXML
     public void initialize() {
         playerColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
         scoreColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
-        statusColumn.setCellValueFactory(cellData ->
-            new javafx.beans.property.SimpleStringProperty(cellData.getValue().getStatus() ? "Online" : "Offline"));
+        statusColumn.setCellValueFactory(cellData
+                -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getStatus() ? "Online" : "Offline"));
 
         tableView.setRowFactory(tv -> new TableRow<User>() {
             @Override
@@ -70,27 +69,26 @@ public class FXMLInviteController {
         try {
             ServerConnect.makeConnectionWithServer();
             ServerConnect.sendMessage("GETPLAYERSSTATUS:" + FXMLLoginController.userEmail);
-            
+
             handelServerMessage();
-            
-        } catch (IOException e) {
+
+        } catch (IOException ex) {
             showAlert("Error", "Unable to load user data.");
         }
     }
-    
-    private void updateView(String[] resArr)
-    {
+
+    private void updateView(String[] resArr) {
         ArrayList<User> usersObj = new ArrayList<>();
-            FXCollections.observableArrayList().clear();
-            for (String u : resArr) {
-                User user = new User(u);
-                usersObj.add(user);
-            }
-            
-            ObservableList<User> users = FXCollections.observableArrayList(usersObj);
-            tableView.setItems(users);
+        FXCollections.observableArrayList().clear();
+        for (String u : resArr) {
+            User user = new User(u);
+            usersObj.add(user);
+        }
+
+        ObservableList<User> users = FXCollections.observableArrayList(usersObj);
+        tableView.setItems(users);
     }
-    
+
     @FXML
     private void handleInviteButton(ActionEvent event) throws IOException {
         User selectedUser = tableView.getSelectionModel().getSelectedItem();
@@ -112,7 +110,6 @@ public class FXMLInviteController {
             showAlert("No User Selected or User Offline", "Please select an online user from the table.");
         }
     }
-    
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -127,33 +124,23 @@ public class FXMLInviteController {
             scheduler.shutdown();
         }
     }
-    
-    private void handelServerMessage()
-    {
+
+    private void handelServerMessage() {
         try {
             String response = ServerConnect.receiveMessage();
             String[] responseArr = response.split(":");
-            if(responseArr.length == 4)
-            {
-                updateView( responseArr);
-            }
-            else
-            {
-                switch(responseArr[0])
-                {
+            if (responseArr.length == 4) {
+                updateView(responseArr);
+            } else {
+                switch (responseArr[0]) {
                     case "INVITE_REQUEST":
-                        showAlert(responseArr[0]  , responseArr[1] + " Want To Play With you");
+                        showAlert(responseArr[0], responseArr[1] + " Want To Play With you");
                 }
             }
-            
-            
-            
-            
-            
-            
+
         } catch (IOException ex) {
             Logger.getLogger(FXMLInviteController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }
 }
