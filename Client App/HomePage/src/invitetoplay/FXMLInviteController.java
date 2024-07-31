@@ -1,37 +1,159 @@
 package invitetoplay;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-import javafx.fxml.Initializable;
+import auth.FXMLLoginController;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import serverconnection.ServerConnect;
+import models.User;
 
-public class FXMLInviteController implements Initializable {
-    @FXML
-    private TableView<?> tableView;
-
-    @FXML
-    private TableColumn<?, ?> playerColumn;
+public class FXMLInviteController {
 
     @FXML
-    private TableColumn<?, ?> scoreColumn;
+    private TableView<User> tableView;
 
     @FXML
-    private TableColumn<?, ?> statusColumn;
+    private TableColumn<User, String> playerColumn;
 
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // Customize column header
-        playerColumn.setText("Player");
-        playerColumn.setStyle("-fx-background-color: #D0B8A8; -fx-text-fill: #8D493A; -fx-font-weight: bold;");
+    @FXML
+    private TableColumn<User, Integer> scoreColumn;
 
-        scoreColumn.setText("Score");
-        scoreColumn.setStyle("-fx-background-color: #D0B8A8; -fx-text-fill: #8D493A; -fx-font-weight: bold;");
+    @FXML
+    private TableColumn<User, String> statusColumn;
 
-        statusColumn.setText("Status");
-        statusColumn.setStyle("-fx-background-color: #D0B8A8; -fx-text-fill: #8D493A; -fx-font-weight: bold;");
 
-    }    
+    private String userEmail = FXMLLoginController.userEmail;
     
+    private static ScheduledExecutorService  scheduler;
+
+    @FXML
+    public void initialize() {
+        playerColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
+        scoreColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
+        statusColumn.setCellValueFactory(cellData ->
+            new javafx.beans.property.SimpleStringProperty(cellData.getValue().getStatus() ? "Online" : "Offline"));
+
+        tableView.setRowFactory(tv -> new TableRow<User>() {
+            @Override
+            protected void updateItem(User item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null || empty) {
+                    setStyle("");
+                } else {
+                    setStyle(item.getStatus() ? "-fx-background-color: #D0B8A8;" : "-fx-background-color: #E0E0E0;");
+                }
+            }
+        });
+
+        scheduler = Executors.newSingleThreadScheduledExecutor();
+        scheduler.scheduleAtFixedRate(() -> Platform.runLater(() -> {
+            try {
+                loadData();
+            } catch (IOException e) {
+                showAlert("Error", "Unable to load user data.");
+            }
+        }), 0, 10, TimeUnit.SECONDS);
+    }
+
+    private void loadData() throws IOException {
+        try {
+            ServerConnect.makeConnectionWithServer();
+            ServerConnect.sendMessage("GETPLAYERSSTATUS:" + FXMLLoginController.userEmail);
+            
+            handelServerMessage();
+            
+        } catch (IOException e) {
+            showAlert("Error", "Unable to load user data.");
+        }
+    }
+    
+    private void updateView(String[] resArr)
+    {
+        ArrayList<User> usersObj = new ArrayList<>();
+            FXCollections.observableArrayList().clear();
+            for (String u : resArr) {
+                User user = new User(u);
+                usersObj.add(user);
+            }
+            
+            ObservableList<User> users = FXCollections.observableArrayList(usersObj);
+            tableView.setItems(users);
+    }
+    
+    @FXML
+    private void handleInviteButton(ActionEvent event) throws IOException {
+        User selectedUser = tableView.getSelectionModel().getSelectedItem();
+        if (selectedUser != null && selectedUser.getStatus()) {
+            try {
+                ServerConnect.makeConnectionWithServer();
+                String message = "INVITE:" + selectedUser.getEmail() + ":" + userEmail;
+                ServerConnect.sendMessage(message);
+                String response = ServerConnect.receiveMessage();
+                if ("INVITE_SENT".equals(response)) {
+                    System.out.println("congratulation");
+                } else {
+                    showAlert("Invitation Failed", "Failed to send invitation.");
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(FXMLInviteController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            showAlert("No User Selected or User Offline", "Please select an online user from the table.");
+        }
+    }
+    
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    public static void shutdown() {
+        if (scheduler != null && !scheduler.isShutdown()) {
+            scheduler.shutdown();
+        }
+    }
+    
+    private void handelServerMessage()
+    {
+        try {
+            String response = ServerConnect.receiveMessage();
+            String[] responseArr = response.split(":");
+            if(responseArr.length == 4)
+            {
+                updateView( responseArr);
+            }
+            else
+            {
+                switch(responseArr[0])
+                {
+                    case "INVITE_REQUEST":
+                        showAlert(responseArr[0]  , responseArr[1] + " Want To Play With you");
+                }
+            }
+            
+            
+            
+            
+            
+            
+        } catch (IOException ex) {
+            Logger.getLogger(FXMLInviteController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
 }
