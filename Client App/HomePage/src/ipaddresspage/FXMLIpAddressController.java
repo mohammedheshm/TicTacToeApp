@@ -26,13 +26,13 @@ public class FXMLIpAddressController implements Initializable {
             Logger.getLogger(FXMLIpAddressController.class.getName()).log(Level.SEVERE, "FXML fields are not initialized");
             return;
         }
-        
+
         String ipAddress = txtFieldipAdress.getText();
 
         try {
-             ServerConnect.setSERVER_ADDRESS(ipAddress);
-
-             if (ServerConnect.isConnection()) {
+            ServerConnect.setSERVER_ADDRESS(ipAddress);
+            ServerConnect.makeConnectionWithServer();
+            if (ServerConnect.isConnection()) {
                 lblConnectionStatus.setText("Connected to server at " + ipAddress);
                 Navigation.nextPage(event, "/auth/FXMLLogin.fxml");
             } else {
