@@ -78,12 +78,6 @@ public class FXMLSignUpController implements Initializable {
         } catch (IOException e) {
             showAlert("Error", "Could not connect to the server. Please try again later.");
             e.printStackTrace();
-        } finally {
-            try {
-                ServerConnect.closeConnection();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
         
 

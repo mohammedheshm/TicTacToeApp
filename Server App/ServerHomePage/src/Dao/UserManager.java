@@ -13,7 +13,7 @@ public class UserManager {
 
 //    // Method to retrieve all users from the database
     public static List<User> getAllUsers() {
-        System.out.println("Fetching all users");
+        //System.out.println("Fetching all users");
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM USERS";
         try (Connection connection = DatabaseConnection.getConnection();

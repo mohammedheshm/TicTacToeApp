@@ -11,7 +11,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="gridPane" prefHeight="436.0" prefWidth="600.0" style="-fx-background-color: #F8EDE3;" stylesheets="@../style/styles.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gamewindow.FXMLGameWindowController">
+<AnchorPane id="AnchorPane" prefHeight="436.0" prefWidth="600.0" style="-fx-background-color: #F8EDE3;" stylesheets="@../style/styles.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gamewindow.FXMLGameWindowController">
     <children>
         <ImageView fx:id="ticTacToeIcon" fitHeight="65.0" fitWidth="49.0" layoutX="169.0" layoutY="31.0" pickOnBounds="true" preserveRatio="true" smooth="true">
             <image>
@@ -37,9 +37,9 @@
                 <Font name="Arial Bold" size="16.0" />
             </font>
         </Text>
-        <Text id="playerScore" fx:id="userScoreText" fill="#8d493a" layoutX="232.0" layoutY="71.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" wrappingWidth="30.0078125">
+        <Text id="playerScore" fx:id="userScoreText" fill="#8d493a" layoutX="221.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0">
             <font>
-                <Font name="System Bold" size="24.0" />
+                <Font size="13.0" />
             </font>
         </Text>
         <VBox layoutX="118.0" layoutY="111.0" prefHeight="255.0" prefWidth="372.0" style="-fx-background-radius: 12; -fx-border-width: 10; -fx-background-color: #D0B8A8;">
@@ -74,12 +74,12 @@
                 <Font name="Arial Bold" size="16.0" />
             </font>
         </Text>
-        <Text fx:id="computerScoreText" fill="#8d493a" layoutX="445.0" layoutY="72.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" wrappingWidth="44.08046007156372">
+        <Text fx:id="computerScoreText" fill="#8d493a" layoutX="355.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0">
             <font>
-                <Font name="System Bold" size="24.0" />
+                <Font size="13.0" />
             </font>
         </Text>
-        <Button layoutX="531.0" layoutY="378.0" mnemonicParsing="false" onAction="#handleScreenRecordButton" prefHeight="44.0" prefWidth="44.0" scaleShape="false" styleClass="round-button">
+        <Button layoutX="531.0" layoutY="378.0" mnemonicParsing="false" onAction="#handleScreenShootButton" prefHeight="44.0" prefWidth="44.0" scaleShape="false" styleClass="round-button">
             <graphic>
                 <ImageView fitHeight="44.0" fitWidth="48.0" preserveRatio="true">
                     <image>
@@ -88,16 +88,8 @@
                 </ImageView>
             </graphic>
         </Button>
-        <Button layoutX="247.0" layoutY="380.0" mnemonicParsing="false" onAction="#handleResetButton" prefHeight="44.0" prefWidth="118.0" style="-fx-background-color: #8d493a; -fx-text-fill: white; -fx-background-radius: 12;">
-            <text>Play Again</text>
-         <font>
-            <Font name="System Bold" size="18.0" />
-         </font>
+        <Button layoutX="241.0" layoutY="378.0" mnemonicParsing="false" onAction="#handleResetButton" prefHeight="44.0" prefWidth="118.0" style="-fx-background-color: #8d493a; -fx-text-fill: white;">
+            <text>Reset Game</text>
         </Button>
-        <Button fx:id="replayButton" layoutX="477.0" layoutY="13.0" onAction="#handleReplayButton" style="-fx-background-color: #8d493a; -fx-background-radius: 12;" text="play redcord" textFill="WHITE">
-         <font>
-            <Font name="System Bold" size="16.0" />
-         </font></Button>
-
     </children>
 </AnchorPane>

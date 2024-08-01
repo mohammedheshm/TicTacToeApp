@@ -68,6 +68,7 @@ public class ServerConnect {
     }
 
     public static boolean isConnection() throws IOException {
+        //makeConnectionWithServer();
         return running;
     }
 }

@@ -1,6 +1,7 @@
 package models;
 
 public class User {
+
     private String username;
     private int score;
     private boolean status;
@@ -12,10 +13,6 @@ public class User {
         this.score = Integer.parseInt(fields[1]);
         this.status = "Online".equals(fields[2]);
         this.email = fields[3];
-    }
-
-    public User(String username, int score, boolean status) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public String getUsername() {

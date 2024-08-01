@@ -51,7 +51,6 @@ public class FXMLLoginController implements Initializable {
             String response = ServerConnect.receiveMessage();
             if (response != null) {
                 if (response.startsWith("LOGIN_SUCCESS")) {
-                    //String username = response.split(":")[1];
                     userEmail = email;
                     Navigation.nextPage(event, "/invitetoplay/FXMLInvite.fxml");
                 } else {
@@ -61,12 +60,6 @@ public class FXMLLoginController implements Initializable {
         } catch (IOException e) {
             showAlert("Error", "Could not connect to the server. Please try again later.");
             e.printStackTrace();
-        } finally {
-            try {
-                ServerConnect.closeConnection();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 

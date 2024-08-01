@@ -35,12 +35,6 @@ public class ClientHandler implements Runnable {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                clientSocket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -65,7 +59,7 @@ public class ClientHandler implements Runnable {
                 break;
             case "ACCEPT_INVITE":
                 System.out.println("Accepted Done !" + parts[1] + parts[2]);
-                handleAcceptInvite(parts[2]);
+                handleAcceptInvite(parts[2] , parts[1]);
                 break;
 
             case "DECLINE_INVITE":
@@ -96,7 +90,7 @@ public class ClientHandler implements Runnable {
     private void handleDeclineInvite(String invitingUser, String invitedUser) {
         for (ClientHandler client : server.getClients()) {
             if (client.getUseremail().equals(invitingUser)) {
-                client.sendMessage("DECLINE_INVITE:" + invitingUser);
+                client.sendMessage("DECLINE_INVITE:" + invitedUser);
                 return;
             }
         }
@@ -178,12 +172,12 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    private void handleAcceptInvite(String invitedEmail) {
+    private void handleAcceptInvite(String invitedEmail , String invitingEmail) {
 
         boolean inviteResponse = false;
         for (ClientHandler client : server.getClients()) {
             if (client.getUseremail() != null && client.getUseremail().equals(invitedEmail)) {
-                client.sendMessage("ACCEPT_INVITE:" + client.getUseremail());
+                client.sendMessage("ACCEPT_INVITE:" + invitingEmail);
                 inviteResponse = true;
                 //break;
             }

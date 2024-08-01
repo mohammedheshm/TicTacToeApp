@@ -1,46 +1,24 @@
 package gamewindow;
 
-import alert.FXMLLoserController;
-import alert.FXMLWinnerController;
-import alert.PlayerNameDialogController;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import localmodes.LocalModesController;
+import javafx.util.Duration;
 import localpage.FXMLLocalController;
 import pagemanager.Navigation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.scene.Node;
-import javafx.stage.FileChooser;
-import javafx.util.Duration;
 
 public class FXMLGameWindowController implements Initializable {
 
@@ -51,8 +29,6 @@ public class FXMLGameWindowController implements Initializable {
     private boolean gameWon = false;
     private Random random = new Random();
     private String difficulty;
-    private PlayerNameDialogController controller;
-    private List<String> moveHistory = new ArrayList<>();
 
 
     @FXML
@@ -61,9 +37,6 @@ public class FXMLGameWindowController implements Initializable {
     private Text computerNameText;
     @FXML
     private Text computerScoreText;
-
-    @FXML
-    private Text userNameText;
 
     @FXML
     private Button button00;
@@ -91,78 +64,20 @@ public class FXMLGameWindowController implements Initializable {
     private final Image xImage = new Image(getClass().getResourceAsStream("/resources/x.png"));
     private final Image oImage = new Image(getClass().getResourceAsStream("/resources/o.png"));
     private final Image player2Image = new Image(getClass().getResourceAsStream("/resources/humanavatar1.png"));
-    Image winImage = new Image(getClass().getResourceAsStream("/resources/win.png"));
-    Image noWinner = new Image(getClass().getResourceAsStream("/resources/response.png"));
 
     @FXML
     public void handleBackHButton(ActionEvent event) {
-        if (LocalModesController.isTwoPlayers) {
-            Navigation.nextPage(event, "/localmodes/LocalModes.fxml");
-        } else {
-            if (!gameWon) {
-                boolean okClicked = Navigation.showQuitAlert(event, "Do You Want to Quit The Game", "Yes", "/alert/FXMLPlayAgainDialog.fxml");
-                if (okClicked) {
-                    Navigation.nextPage(event, "/localpage/FXMLLocal.fxml");
-
-                }
-
-            } else {
-                Navigation.nextPage(event, "/localpage/FXMLLocal.fxml");
-
-            }
-        }
+        Navigation.nextPage(event, "/localpage/FXMLLocal.fxml");
     }
 
     @FXML
-    public void handleScreenRecordButton(ActionEvent event) {
-        saveGameState();
+    public void handleScreenShootButton(ActionEvent event) {
+       
     }
-
-
-private void saveGameState() {
-    String fileName = "game_record_" + System.currentTimeMillis() + ".txt";
-    File file = new File("src/record/" + fileName);
-    
-    try (FileWriter writer = new FileWriter(file)) {
-        writer.write("User: " + userNameText.getText() + "\n");
-        writer.write("Computer: " + computerNameText.getText() + "\n");
-        writer.write("User Score: " + userScore + "\n");
-        writer.write("Computer Score: " + computerScore + "\n");
-
-        int moveCount = 0;
-        for (String move : moveHistory) {
-            writer.write(moveCount + " " + move + "\n");
-            moveCount++;
-        }
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
-}
-
-private void recordMove(String player, int row, int col) {
-    String move = player + " " + row + "," + col;
-    moveHistory.add(move);
-}
 
     @FXML
     public void handleResetButton(ActionEvent event) {
-
-        if (LocalModesController.isTwoPlayers) {
-            resetGame();
-        } else {
-            if (!gameWon) {
-                boolean okClicked = Navigation.showQuitAlert(event, "You Will Lose The Game", "Ok", "/alert/FXMLPlayAgainDialog.fxml");
-                if (okClicked) {
-                    computerScore++;
-                    computerScoreText.setText(String.valueOf(computerScore));
-                    resetGame();
-                } else if (okClicked) {
-                    resetGame();
-                }
-            } else {
-                resetGame();
-            }
-        }
+        resetGame();
     }
 
     @FXML
@@ -181,8 +96,8 @@ private void recordMove(String player, int row, int col) {
             makeMove(clickedButton, row, col, currentPlayer, currentImage);
 
             if (!gameWon && !isBoardFull()) {
-                if (LocalModesController.isTwoPlayers) {
-                    isUserTurn = !isUserTurn;
+                if (FXMLLocalController.isTwoPlayers) {
+                    isUserTurn = !isUserTurn; 
                 } else {
                     isUserTurn = false;
                     PauseTransition pause = new PauseTransition(Duration.seconds(1));
@@ -192,14 +107,16 @@ private void recordMove(String player, int row, int col) {
             }
         }
     }
+    
+    
+    
+    
+    //////////////////////////////////////////////
 
-private void makeMove(Button button, int row, int col, String player, Image image) {
+   private void makeMove(Button button, int row, int col, String player, Image image) {
     board[row][col] = player;
     ImageView imageView = new ImageView(image);
     button.setGraphic(imageView);
-
-    // Record the move
-    recordMove(player, row, col);
 
     if (checkWin()) {
         highlightWinningButtons();
@@ -207,17 +124,18 @@ private void makeMove(Button button, int row, int col, String player, Image imag
         if (player.equals("X")) {
             userScore++;
             userScoreText.setText(String.valueOf(userScore));
-            showGameResult("win");
+            showGameResult("win"); 
         } else {
             computerScore++;
             computerScoreText.setText(String.valueOf(computerScore));
-            showGameResult("lose");
+            showGameResult("lose"); 
         }
     } else if (isBoardFull()) {
         showGameResult("tie");
         resetGame();
     }
 }
+
 
     private void computerMove() {
         switch (difficulty) {
@@ -232,19 +150,34 @@ private void makeMove(Button button, int row, int col, String player, Image imag
                 break;
         }
 
-        if (checkWin()) {
-            highlightWinningButtons();
-            gameWon = true;
-        } else if (isBoardFull()) {
-            showGameResult("tie");
-            resetGame();
-        } else {
-            isUserTurn = true;
-        }
+                       
+             if (checkWin()) {
+                 highlightWinningButtons();
+                 gameWon = true;
+                 computerScore++;
+                 computerScoreText.setText(String.valueOf(computerScore));
+                 
+                 
+                 Platform.runLater(() -> {
+                     Alert alert = new Alert(AlertType.INFORMATION);
+                     alert.setTitle("Game Over");
+                     alert.setHeaderText(null);
+                     alert.setContentText("You lost to the computer!");
+                     //alert.showAndWait();
+                 });
 
-    }
+             } else if (isBoardFull()) {
+                 showGameResult("tie");
+                 resetGame();
+             } else {
+                 isUserTurn = true; 
+             }
 
-    //Handle Easy Mode With Computer
+
+
+
+         }
+
     private void easyMove() {
         int row, col;
         do {
@@ -258,14 +191,20 @@ private void makeMove(Button button, int row, int col, String player, Image imag
         }
     }
 
-    //Handle Medium Mode With Computer
     private void mediumMove() {
         if (!blockUserWin()) {
             easyMove();
         }
     }
 
-    // Block User
+    
+    
+    
+    
+    
+    
+    ///////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
     private boolean blockUserWin() {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
@@ -286,7 +225,6 @@ private void makeMove(Button button, int row, int col, String player, Image imag
         return false;
     }
 
-    // Handel Hard Mode With Computer
     private void hardMove() {
         int[] bestMove = minimax(board, true);
         int row = bestMove[0];
@@ -297,7 +235,6 @@ private void makeMove(Button button, int row, int col, String player, Image imag
         }
     }
 
-    // MinMax Algorithm
     private int[] minimax(String[][] board, boolean isMaximizing) {
         int bestScore = isMaximizing ? Integer.MIN_VALUE : Integer.MAX_VALUE;
         int[] bestMove = {-1, -1, isMaximizing ? Integer.MIN_VALUE : Integer.MAX_VALUE};
@@ -331,7 +268,6 @@ private void makeMove(Button button, int row, int col, String player, Image imag
         return bestMove;
     }
 
-    // Check Win 
     private boolean checkWin() {
         for (int i = 0; i < 3; i++) {
             if (board[i][0] != null && board[i][0].equals(board[i][1]) && board[i][1].equals(board[i][2])) {
@@ -350,7 +286,6 @@ private void makeMove(Button button, int row, int col, String player, Image imag
         return false;
     }
 
-    // Highlight Winer Buttons
     private void highlightWinningButtons() {
         for (int i = 0; i < 3; i++) {
             if (board[i][0] != null && board[i][0].equals(board[i][1]) && board[i][1].equals(board[i][2])) {
@@ -382,212 +317,6 @@ private void makeMove(Button button, int row, int col, String player, Image imag
             button.setStyle("-fx-background-color: #9D886B;");
         }
     }
-
-
-    private boolean isBoardFull() {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (board[i][j] == null) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    private void resetGame() {
-        board = new String[3][3];
-        resetButtonStyle(button00);
-        resetButtonStyle(button01);
-        resetButtonStyle(button02);
-        resetButtonStyle(button10);
-        resetButtonStyle(button11);
-        resetButtonStyle(button12);
-        resetButtonStyle(button20);
-        resetButtonStyle(button21);
-        resetButtonStyle(button22);
-        isUserTurn = true;
-        gameWon = false;
-    }
-
-    private void resetButtonStyle(Button button) {
-        button.setGraphic(null);
-        button.setStyle("-fx-background-color: #DFD3C3; -fx-background-radius: 15;");
-    }
-
-    private void showGameResult(String result) {
-        Platform.runLater(() -> {
-            try {
-                if (LocalModesController.isTwoPlayers) {
-                    switch (result) {
-                        case "win":
-                            String playerName1 = controller.getPlayer1Name();
-                            String player1Message = "Congratulations! " + (!playerName1.isEmpty() ? playerName1 : "Player 1") + " wins.";
-                            Navigation.showAlert(null, "/alert/FXMLSingleButtonAlert.fxml", player1Message, "Game Over", winImage);
-                            break;
-                        case "lose":
-                            String playerName2 = controller.getPlayer2Name();
-                            String player2Message = "Congratulations! " + (!playerName2.isEmpty() ? playerName2 : "Player 2") + " wins.";
-                            Navigation.showAlert(null, "/alert/FXMLSingleButtonAlert.fxml", player2Message, "Game Over", winImage);
-                            break;
-                        case "tie":
-                            Navigation.showAlert(null, "/alert/FXMLSingleButtonAlert.fxml",
-                                    "No Winner", "Game Over", noWinner);
-                            break;
-                    }
-
-                } else {
-                    FXMLLoader loader;
-                    switch (result) {
-                        case "win":
-                            loader = new FXMLLoader(getClass().getResource("/alert/FXMLWinner.fxml"));
-                            break;
-                        case "lose":
-                            loader = new FXMLLoader(getClass().getResource("/alert/FXMLLoser.fxml"));
-                            break;
-                        case "tie":
-                            Navigation.showAlert(null, "/alert/FXMLSingleButtonAlert.fxml",
-                                    "No Winner", "Game Over", noWinner);
-                            return;
-                        default:
-                            return;
-                    }
-
-                    Parent root = loader.load();
-                    MediaView mediaView;
-                    final MediaPlayer mediaPlayer;
-
-                    if (result.equals("win")) {
-                        FXMLWinnerController controller = loader.getController();
-                        mediaView = controller.getMediaView();
-                        Media winMedia = new Media(getClass().getResource("/resources/winner.mp4").toExternalForm());
-                        mediaPlayer = new MediaPlayer(winMedia);
-                    } else {
-                        FXMLLoserController controller = loader.getController();
-                        mediaView = controller.getMediaView();
-                        Media loseMedia = new Media(getClass().getResource("/resources/loser.mp4").toExternalForm());
-                        mediaPlayer = new MediaPlayer(loseMedia);
-                    }
-
-                    mediaView.setMediaPlayer(mediaPlayer);
-                    mediaView.setFitWidth(820);
-                    mediaView.setFitHeight(450);
-                    mediaPlayer.play();
-
-                    Stage stage = new Stage();
-                    stage.setTitle("Game Over");
-                    stage.setResizable(false);
-                    Scene scene = new Scene(root);
-                    stage.setScene(scene);
-
-                    stage.setOnCloseRequest(event -> {
-                        if (mediaPlayer.getStatus().equals(MediaPlayer.Status.PLAYING)) {
-                            mediaPlayer.stop();
-                        }
-                    });
-
-                    stage.showAndWait();
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(FXMLGameWindowController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        });
-    }
-
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        userScoreText.setText(String.valueOf(userScore));
-        computerScoreText.setText(String.valueOf(computerScore));
-        difficulty = FXMLLocalController.getDifficulty();
-
-        if (LocalModesController.isTwoPlayers) {
-            showPlayerNameDialog();
-            imageView.setImage(player2Image);
-        } else {
-            computerNameText.setText("Computer");
-        }
-    }
-
-    private void showPlayerNameDialog() {
-        try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("/alert/FXMLPlayerNameDialog.fxml"));
-            AnchorPane page = loader.load();
-
-            Stage dialogStage = new Stage();
-            dialogStage.setTitle("Enter Player Names");
-            Scene scene = new Scene(page);
-            dialogStage.setScene(scene);
-
-            controller = loader.getController();
-            controller.setDialogStage(dialogStage);
-
-            dialogStage.showAndWait();
-
-            if (controller.isOkClicked()) {
-                String player1Name = controller.getPlayer1Name();
-                String player2Name = controller.getPlayer2Name();
-                userNameText.setText(player1Name);
-                computerNameText.setText(player2Name);
-            } else {
-                userNameText.setText("Player1");
-                computerNameText.setText("Player2");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
-    public void handleReplayButton(ActionEvent event) {
-
-     FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Game Record File");
-        File file = fileChooser.showOpenDialog(((Node) event.getSource()).getScene().getWindow());
-        if (file != null) {
-            replayMoves(file);
-        }
-    }
-
-private void replayMoves(File file) {
-    List<String> moves = new ArrayList<>();
-    try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-        String line;
-        while ((line = reader.readLine()) != null) {
-            if (line.startsWith("User:") || line.startsWith("Computer:") || line.startsWith("User Score:") || line.startsWith("Computer Score:")) {
-                continue; 
-            }
-            moves.add(line);
-        }
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
-
-    resetGame();
-    Timeline timeline = new Timeline();
-    int moveIndex = 0;
-
-    for (String move : moves) {
-        String[] parts = move.split(" ");
-        String player = parts[1];
-        String[] coords = parts[2].split(",");
-        int row = Integer.parseInt(coords[0]);
-        int col = Integer.parseInt(coords[1]);
-
-        timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(moveIndex * 1), e -> {
-            Button button = getButtonByRowCol(row, col);
-            if (button != null) {
-                Image currentImage = player.equals("X") ? xImage : oImage;
-                makeMove(button, row, col, player, currentImage);
-            }
-        }));
-
-        moveIndex++;
-    }
-
-   
-    timeline.play();
-}
 
     private Button getButtonByRowCol(int row, int col) {
         switch (row) {
@@ -625,6 +354,84 @@ private void replayMoves(File file) {
         return null;
     }
 
+    private boolean isBoardFull() {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j] == null) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private void resetGame() {
+        board = new String[3][3];
+        resetButtonStyle(button00);
+        resetButtonStyle(button01);
+        resetButtonStyle(button02);
+        resetButtonStyle(button10);
+        resetButtonStyle(button11);
+        resetButtonStyle(button12);
+        resetButtonStyle(button20);
+        resetButtonStyle(button21);
+        resetButtonStyle(button22);
+        isUserTurn = true;
+        gameWon = false;
+    }
+
+    private void resetButtonStyle(Button button) {
+        button.setGraphic(null);
+        button.setStyle("-fx-background-color: #DFD3C3; -fx-background-radius: 15;");
+    }
+
+    private void showGameResult(String result) {
+    Platform.runLater(() -> {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Game Over");
+        alert.setHeaderText(null);
+
+        if (FXMLLocalController.isTwoPlayers) {
+           
+            if (result.equals("win")) {
+                alert.setContentText("Congratulations! Player 1 wins!");
+            } else if (result.equals("lose")) {
+                alert.setContentText("Sorry, Player 2 wins. Better luck next time!");
+            } else if (result.equals("tie")) {
+                alert.setContentText("It's a tie!");
+            }
+        } else {
+            
+            switch (result) {
+                case "win":
+                    alert.setContentText("Congratulations! You win!");
+                    break;
+                case "lose":
+                    alert.setContentText("Sorry, you lost. Better luck next time!");
+                    break;
+                case "tie":
+                    alert.setContentText("It's a tie!");
+                    break;
+            }
+        }
+
+        alert.showAndWait();
+    });
+}
 
 
+
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        userScoreText.setText(String.valueOf(userScore));
+        computerScoreText.setText(String.valueOf(computerScore));
+        difficulty = FXMLLocalController.getDifficulty();
+
+        if (FXMLLocalController.isTwoPlayers) {
+            imageView.setImage(player2Image);
+            computerNameText.setText("Player2");
+        } else {
+            computerNameText.setText("Computer");
+        }
+    }
 }

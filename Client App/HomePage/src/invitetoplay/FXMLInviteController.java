@@ -155,11 +155,15 @@ public class FXMLInviteController {
                         showAlert(responseArr[0], responseArr[1] + " Want To Play With you");
                         break;
                     case "ACCEPT_INVITE":
-                        showAlert(responseArr[0], responseArr[1] + " Accept To Pplay With You");
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle(responseArr[1] + " Accept To Play With You");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Let's Play");
+                        alert.showAndWait();
                         // Navigation.nextPage(null, "/gamewindow/FXMLGameWindow.fxml");
                         break;
                     case "DECLINE_INVITE":
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert = new Alert(Alert.AlertType.INFORMATION);
                         alert.setTitle("Decline Invitation from  " + responseArr[1]);
                         alert.setHeaderText(null);
                         alert.setContentText("I don't wan't play now");

@@ -7,9 +7,7 @@ package alert;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.media.MediaView;
 
 /**
  * FXML Controller class
@@ -18,13 +16,9 @@ import javafx.scene.media.MediaView;
  */
 public class FXMLLoserController implements Initializable {
 
-   @FXML
-    private MediaView mediaView1;
-
-    public MediaView getMediaView() {
-        return mediaView1;
-    }
-
+    /**
+     * Initializes the controller class.
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
